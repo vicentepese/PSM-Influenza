@@ -1,0 +1,14 @@
+{   
+    "folders":{
+        "Data":"Data/"
+    },
+
+    "files":{
+        "AFLSA":"Data/AFLSA208A_PAN_TRYPSIN.csv",
+        "filt_AFLSA":"Data/filt_AFLSA.csv"
+    },
+
+    "filterData":"HA-",
+    "filterDataBash":"./filterData.sh",
+    "pos_range": [250,320]
+}
