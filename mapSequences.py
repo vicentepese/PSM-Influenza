@@ -29,7 +29,7 @@ def filterData(options):
     # Filt in bash 
     call(options['filterDataBash'], shell=True)
 
-def mapSeqs(options, refProt):
+def importAFLSA(options):
 
     # Import data  as list of lists
     AFLSA = list() 
@@ -37,6 +37,10 @@ def mapSeqs(options, refProt):
         reader = csv.reader(inFile)
         for row in reader:
             AFLSA.append(row)
+    
+    return AFLSA
+
+def mapSeqs(options, AFLSA, refProt):
 
     # Get proteins 
     proteins = list(np.unique(np.asarray([seq[0] for seq in AFLSA])))
@@ -80,6 +84,21 @@ def mapSeqs(options, refProt):
             
     return seqMap
 
+def countSequences(options, AFLSA):
+
+    # Get proteins 
+    proteins = list(np.unique(np.asarray([seq[0] for seq in AFLSA])))
+
+    # For each sequence 
+    pos_range = options['pos_range']
+    seqMap = defaultdict(list)
+
+    # TODO: Count sequences
+
+    pass
+
+
+
 def main():
 
     # Read options
@@ -92,13 +111,17 @@ def main():
     # Get reference protein 
     refProt = reference_retreive("ACQ55359.1")
 
+    # Import AFLSA
+    AFLSA = importAFLSA(options)
+
     # Map sequences 
-    seqMap = mapSeqs(options, refProt)
+    seqMap = mapSeqs(options, AFLSA, refProt)
 
     for pos in list(seqMap.keys()):
         seqMap[pos] = list(np.unique(np.asarray(seqMap[pos])))
 
-    print('stop')
+    # Count sequences
+    countSequences(options, AFLSA)
 
 if __name__ == "__main__":
     main()
