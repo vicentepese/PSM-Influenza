@@ -1,11 +1,14 @@
 {   
     "folders":{
-        "Data":"Data/"
+        "Data":"Data/",
+        "Outputs":"Outputs/"
     },
 
     "files":{
         "AFLSA":"Data/AFLSA208A_PAN_TRYPSIN.csv",
-        "filt_AFLSA":"Data/filt_AFLSA.csv"
+        "filt_AFLSA":"Data/filt_AFLSA.csv",
+        "seqCount":"Outputs/seqCount.csv",
+        "seqCountRange":"Outputs/seqCount.csv"
     },
 
     "filterData":"HA-",
