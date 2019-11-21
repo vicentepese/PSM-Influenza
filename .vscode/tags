@@ -1,0 +1,13 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+countSequences	../mapSequences.py	/^def countSequences(options, AFLSA):$/;"	kind:function	line:80
+filterData	../mapSequences.py	/^def filterData(options):$/;"	kind:function	line:23
+importAFLSA	../mapSequences.py	/^def importAFLSA(options):$/;"	kind:function	line:28
+main	../mapSequences.py	/^def main():$/;"	kind:function	line:124
+mapSeqs	../mapSequences.py	/^def mapSeqs(options, AFLSA, refProt):$/;"	kind:function	line:39
+mapSequences.py	../mapSequences.py	1;"	kind:file	line:1
+reference_retreive	../mapSequences.py	/^def reference_retreive(proteinID):$/;"	kind:function	line:10
