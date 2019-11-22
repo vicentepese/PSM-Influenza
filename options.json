@@ -17,5 +17,10 @@
     "filterData":"HA-",
     "filterDataBash":"./filterData.sh",
     "pos_range": [250,320],
-    "refProt":"ADE29085.1"
+    "refProt":"ADE29085.1",
+    
+    "MarkdownHigh":{
+        "init":"<span style=\"color: red\">",
+        "end":"</span>"
+    }
 }
