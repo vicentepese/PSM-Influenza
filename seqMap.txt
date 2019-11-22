@@ -1,0 +1,210 @@
+222222222222222222222222222222222222222222222222222222222223333333333333333333333333
+444444444555555555566666666667777777777888888888899999999990000000000111111111122222
+123456789012345678901234567890123456789012345678901234567890123456789012345678901234
+
+         LVEPGDKITFEATGNLVVPRYAFAMERNAGSGIIISDTPVHDCNTTCQTPKGAINTSLPFQNIHPITIGKC    
+
+
+EGRMNYYWTLVEPGDK(1)
+
+   MNYYWTLVEPGDK(482)
+
+   MNYYWTLVEPGDKITFEATGNLVVPR(76)
+                _
+   MNYYWTLVEPGDKR(21)
+         _
+   MNYYWTQVEPGDKITFEATGNLVVPR(3)
+                _
+   MNYYWTLVEPGDKRTFEATGNLVVPR(21)
+
+   MNYYWTLVEPGDKITFEATGNLVVPRYAFAMER(33)
+           _
+   MNYYWTLVKPGDKITFEATGNLVVPRYAFAMER(1)
+           _
+   MNYYWTLVKPGDKITFEATGNLVVPR(2)
+           _
+   MNYYWTLVKPGDK(1)
+
+      YWTLVEPGDKITF(20)
+      _
+      HWTLVEPGDKITF(1)
+         _
+      YWTQVEPGDKITF(1)
+       _
+      YCTLVEPGDKITF(2)
+                _
+      YWTLVEPGDKRTF(6)
+
+       WTLVEPGDKITF(24)
+       _
+       RTLVEPGDKITF(1)
+         _
+       WTPVEPGDKITF(1)
+        _
+       WALVEPGDKITF(1)
+                _
+       WTLVEPGDKRTF(6)
+         _
+       WTQVEPGDKITF(1)
+
+        TLVEPGDK(3)
+
+        TLVEPGDKITF(291)
+                _
+        TLVEPGDKRTF(1)
+
+        TLVEPGDKITFEATGNLVVPRYAF(9)
+
+        TLVEPGDKITFEATGNLVVPRY(1)
+                   _
+        TLVEPGDKITFQATGNLVVPRYAF(1)
+                _
+        TLVEPGDKVTF(1)
+          _
+        TLIEPGDKITF(1)
+          _
+        TLLEPGDKITF(1)
+                       _
+        TLVEPGDKITFEATGY(1)
+                  _
+        TLVEPGDKITY(4)
+             _
+        TLVEPADKITF(1)
+          _
+        TLEEPGDKITF(3)
+           _
+        TLVQPGDKITF(1)
+          _
+        TLAEPGDKITF(1)
+           _
+        TLVGPGDKITF(1)
+              _
+        TLVEPGNKITF(1)
+            _
+        TLVETGDKITF(1)
+        _
+        ILVEPGDKITF(1)
+              _
+        TLVEPGAKITF(1)
+        _
+        KLVEPGDKITF(1)
+                 _
+        TLVEPGDKIKF(1)
+         _
+        TRVEPGDKITF(1)
+               _
+        TLVEPGDNITF(1)
+
+                ITFEATGNLVVPR(541)
+
+                ITFEATGNLVVPRYAFAMER(2)
+                _
+                RTFEATGNLVVPR(3)
+                              _
+                ITFEATGNLVVPRYVFAMER(3)
+
+                 TFEATGNLVVPR(3)
+
+                   EATGNLVVPRY(20)
+
+                   EATGNLVVPRYAF(77)
+                              _
+                   EATGNLVVPRYVF(6)
+                       _
+                   EATGDLVVPRYAF(3)
+                   _
+                   QATGNLVVPRYAF(2)
+                       _
+                   EATGKLVVPRY(1)
+                      _
+                   EATVNLVVPRY(2)
+                      _
+                   EATENLVVPRY(1)
+                           _
+                   EATGNLVVLRY(1)
+                         _
+                   EATGNLMVPRY(2)
+                    _
+                   ESTGNLVVPRY(1)
+                         _
+                   EATGNLLVPRY(1)
+                           _
+                   EATGNLVVARY(1)
+                   _
+                   AATGNLVVPRY(1)
+                             _
+                   EATGNLVVPRFAF(1)
+                     _
+                   EAPGNLVVPRYAF(1)
+                     _
+                   EAAGNLVVPRY(1)
+                              _
+                   EATGNLVVPRYSF(1)
+                          _
+                   EATGNLVEPRYAF(1)
+                      _
+                   EATRNLVVPRY(1)
+                             _
+                   EATGNLVVPRDAF(1)
+                            _
+                   EATGNLVVPSY(1)
+
+                        LVVPRYAF(1)
+
+                             YAFAMER(165)
+
+                             YAFAMERNAGSGIIISDTPVHDCNTTCQTPK(2)
+                              _
+                             YVFAMER(9)
+                                           _
+                              AFAMERNAGSGIIF(1)
+                                         _
+                              AFAMERNAGSGF(1)
+                                           _
+                                AMERNAGSGIIF(1)
+                                                _
+                                AMERNAGSGIIISDTPF(1)
+                                                               _
+                                AMERNAGSGIIISDTPVHDCNTTCQTPKGAISTSLPF(1)
+
+                                    NAGSGIIISDTPVHDCNTTCQTPK(32)
+
+                                           ISDTPVHDCNTTCQTPKGAINTSLPF(1)
+
+                                                     TTCQTPKGAINTSLPF(1)
+
+                                                        QTPKGAINTSLPF(1)
+
+                                                            GAINTSLPFQNIHPITIGK(83)
+                                                                         _
+                                                            GAINTSLPFQNIHQITIGK(17)
+
+                                                            GAINTSLPFQNIHPITIGKCPK(2)
+
+                                                                     QNIHPITIGKCPKY(56)
+                                                                         _
+                                                                     QNIHQITIGKCPKY(5)
+                                                                                _
+                                                                     QNIHPITIGKCAKY(1)
+                                                                     _
+                                                                     ENIHPITIGKCPKY(2)
+                                                                        _
+                                                                     QNIDPITIGKCPKY(1)
+                                                                                 _
+                                                                     QNIHPITIGKCPTY(1)
+                                                                             _
+                                                                     QNIHPITIRKCPKY(2)
+                                                                        _
+                                                                     QNINPITIGKCPKY(1)
+                                                                           _
+                                                                     QNIHPIPIGKCPKY(1)
+                                                                               _
+                                                                     QNIHPITIGKSPKY(1)
+                                                                      _
+                                                                     QIIHPITIGKCPKY(1)
+                                                                                _
+                                                                     QNIHPITIGKCSKY(1)
+                                                                           _
+                                                                     QNIHPIAIGKCPKY(1)
+
+                                                                         PITIGKCPKY(1)
