@@ -46,11 +46,12 @@ def mapSeqs(options, AFLSA):
 
 	# For each sequence 
 	pos_range = options['pos_range']
+
 	seqMap = defaultdict(list)
 	for seq in AFLSA:
 
 		# Get initial position
-		init_pos = int(seq[-1])
+		init_pos = int(seq[2])
 
 		# Remove PTM and compute ending positon, else no PTM and compute ending position
 		if '[' in seq[1]:
@@ -84,15 +85,13 @@ def countSequences(options, AFLSA):
 
 	# For each sequence 
 	pos_range = options['pos_range']
-
-	# TODO: Count sequences
-	seqCount = defaultdict(int)
-	seqCountRange = defaultdict(int)
+	seqCount = defaultdict(lambda: defaultdict(int))
+	seqCountRange = defaultdict(lambda: defaultdict(int))
 	seqInit = defaultdict(int)
 	for seq in AFLSA:
 
 		 # Get initial position
-		init_pos = int(seq[-1])
+		init_pos = int(seq[2])
 
 		# Remove PTM and compute ending positon, else no PTM and compute ending position
 		if '[' in seq[1]:
@@ -109,10 +108,10 @@ def countSequences(options, AFLSA):
 		if init_pos >= pos_range[0] and init_pos <= pos_range[1]:
 
 			# Count 
-			seqCount[AAseq] += 1
+			seqCount[AAseq][seq[3]] += 1
 
 			# Count in range 
-			seqCountRange[AAseq[0:(pos_range[1]-init_pos)]] += 1
+			seqCountRange[AAseq[0:(pos_range[1]-init_pos)]][seq[3]] += 1
 
 			# Keep initial position 
 			seqInit[AAseq] = init_pos
@@ -120,10 +119,10 @@ def countSequences(options, AFLSA):
 		elif end_pos >= pos_range[0] and end_pos <= pos_range[1]:
 
 			# Count 
-			seqCount[AAseq] += 1
+			seqCount[AAseq][seq[3]] += 1
 
 			# Count in range 
-			seqCountRange[AAseq[pos_range[0] - init_pos:]] += 1
+			seqCountRange[AAseq[pos_range[0] - init_pos:]][seq[3]] += 1
 
 			# Keep initial position 
 			seqInit[AAseq] = init_pos
@@ -166,7 +165,7 @@ def mapOfSeqs(options, seqCount, seqInit, refProt):
 	seqString = defaultdict(str)
 	seqMut = defaultdict(str)
 	for seq, seq_init_pos in list(seqInit.items()):
-		seqString[seq] = ' '*(np.absolute(init_pos-seq_init_pos)) + seq + '(' + str(seqCount[seq]) + ')'
+		seqString[seq] = ' '*(np.absolute(init_pos-seq_init_pos)) + seq + '(ARP:' + str(seqCount[seq]['ARP']) + ', PAN:' + str(seqCount[seq]['PAN']) +  ')'
 
 		# Find mutations, get index for the string
 		pos_mut_idx = findMutations(refProt, seq, seq_init_pos)

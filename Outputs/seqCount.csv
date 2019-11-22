@@ -1,85 +1,85 @@
 seq,count
-LVEPGDK,486
-LVEPGDKITFEATGNLVVPR,76
-ITFEATGNLVVPR,541
-YAFAMER,165
-NAGSGIIISDTPVHDCNTTCQTPK,32
-GAINTSLPFQNIHPITIGK,85
-GAINTSLPFQNIHQITIGK,17
-LVEPGDKR,21
-QVEPGDKITFEATGNLVVPR,3
-LVEPGDKRTFEATGNLVVPR,21
-LVEPGDKITFEATGNLVVPRYAFAMER,33
-ITFEATGNLVVPRYAFAMER,2
-YAFAMERNAGSGIIISDTPVHDCNTTCQTPK,2
-RTFEATGNLVVPR,3
-YVFAMER,9
-LVKPGDKITFEATGNLVVPRYAFAMER,1
-LVEPGDKITF,342
-EATGNLVVPRY,20
-EATGNLVVPRYAF,77
-QNIHPITIGK,60
-LVEPGDKRTF,13
-LVEPGDKITFEATGNLVVPRYAF,9
-EATGNLVVPRYVF,6
-QNIHQITIGK,5
-LVEPGDKITFEATGNLVVPRY,1
-EATGDLVVPRYAF,3
-LVEPGDKITFQATGNLVVPRYAF,1
-QATGNLVVPRYAF,2
-LVEPGDKVTF,1
-QTPKGAINTSLPF,1
-LIEPGDKITF,1
-LLEPGDKITF,1
-ENIHPITIGK,2
-EATGKLVVPRY,1
-QNIDPITIGK,1
-LVEPGDKITFEATGY,1
-LVVPRYAF,1
-EATVNLVVPRY,2
-PVEPGDKITF,1
-TTCQTPKGAINTSLPF,1
-EATENLVVPRY,1
-EATGNLVVLRY,1
-LVEPGDKITY,4
-EATGNLMVPRY,2
-ESTGNLVVPRY,1
-QNIHPITIRK,2
-LVEPADKITF,1
-AFAMERNAGSGIIF,1
-AMERNAGSGIIF,1
-LEEPGDKITF,3
-EATGNLLVPRY,1
-EATGNLVVARY,1
-LVQPGDKITF,1
-QVEPGDKITF,2
-LAEPGDKITF,1
-LVGPGDKITF,1
-LVEPGNKITF,1
-AATGNLVVPRY,1
-EATGNLVVPRFAF,1
-EAPGNLVVPRYAF,1
-LVETGDKITF,1
-EAAGNLVVPRY,1
-PITIGK,1
-AMERNAGSGIIISDTPF,1
-QNINPITIGK,1
-EATGNLVVPRYSF,1
-EATGNLVEPRYAF,1
-QNIHPIPIGK,1
-ISDTPVHDCNTTCQTPKGAINTSLPF,1
-AFAMERNAGSGF,1
-AMERNAGSGIIISDTPVHDCNTTCQTPKGAISTSLPF,1
-EATRNLVVPRY,1
-LVEPGAKITF,1
-EATGNLVVPRDAF,1
-LVEPGDKIKF,1
-QIIHPITIGK,1
-RVEPGDKITF,1
-LVEPGDNITF,1
-EATGNLVVPSY,1
-QNIHPIAIGK,1
-TFEATGNLVVPR,3
-ITFEATGNLVVPRYVFAMER,3
-LVKPGDKITFEATGNLVVPR,2
-LVKPGDK,1
+LVEPGDK,"defaultdict(<class 'int'>, {'ARP': 53, 'PAN': 433})"
+LVEPGDKITFEATGNLVVPR,"defaultdict(<class 'int'>, {'ARP': 28, 'PAN': 48})"
+ITFEATGNLVVPR,"defaultdict(<class 'int'>, {'ARP': 64, 'PAN': 477})"
+YAFAMER,"defaultdict(<class 'int'>, {'ARP': 52, 'PAN': 113})"
+NAGSGIIISDTPVHDCNTTCQTPK,"defaultdict(<class 'int'>, {'ARP': 9, 'PAN': 23})"
+GAINTSLPFQNIHPITIGK,"defaultdict(<class 'int'>, {'ARP': 17, 'PAN': 68})"
+GAINTSLPFQNIHQITIGK,"defaultdict(<class 'int'>, {'ARP': 13, 'PAN': 4})"
+LVEPGDKR,"defaultdict(<class 'int'>, {'ARP': 4, 'PAN': 17})"
+QVEPGDKITFEATGNLVVPR,"defaultdict(<class 'int'>, {'ARP': 2, 'PAN': 1})"
+LVEPGDKRTFEATGNLVVPR,"defaultdict(<class 'int'>, {'PAN': 21})"
+LVEPGDKITFEATGNLVVPRYAFAMER,"defaultdict(<class 'int'>, {'PAN': 33})"
+ITFEATGNLVVPRYAFAMER,"defaultdict(<class 'int'>, {'PAN': 2})"
+YAFAMERNAGSGIIISDTPVHDCNTTCQTPK,"defaultdict(<class 'int'>, {'PAN': 2})"
+RTFEATGNLVVPR,"defaultdict(<class 'int'>, {'PAN': 3})"
+YVFAMER,"defaultdict(<class 'int'>, {'PAN': 9})"
+LVKPGDKITFEATGNLVVPRYAFAMER,"defaultdict(<class 'int'>, {'PAN': 1})"
+LVEPGDKITF,"defaultdict(<class 'int'>, {'PAN': 321, 'ARP': 21})"
+EATGNLVVPRY,"defaultdict(<class 'int'>, {'PAN': 16, 'ARP': 4})"
+EATGNLVVPRYAF,"defaultdict(<class 'int'>, {'PAN': 62, 'ARP': 15})"
+QNIHPITIGK,"defaultdict(<class 'int'>, {'PAN': 52, 'ARP': 8})"
+LVEPGDKRTF,"defaultdict(<class 'int'>, {'PAN': 13})"
+LVEPGDKITFEATGNLVVPRYAF,"defaultdict(<class 'int'>, {'ARP': 3, 'PAN': 6})"
+EATGNLVVPRYVF,"defaultdict(<class 'int'>, {'ARP': 5, 'PAN': 1})"
+QNIHQITIGK,"defaultdict(<class 'int'>, {'ARP': 5})"
+LVEPGDKITFEATGNLVVPRY,"defaultdict(<class 'int'>, {'PAN': 1})"
+EATGDLVVPRYAF,"defaultdict(<class 'int'>, {'PAN': 3})"
+LVEPGDKITFQATGNLVVPRYAF,"defaultdict(<class 'int'>, {'PAN': 1})"
+QATGNLVVPRYAF,"defaultdict(<class 'int'>, {'PAN': 2})"
+LVEPGDKVTF,"defaultdict(<class 'int'>, {'PAN': 1})"
+QTPKGAINTSLPF,"defaultdict(<class 'int'>, {'PAN': 1})"
+LIEPGDKITF,"defaultdict(<class 'int'>, {'PAN': 1})"
+LLEPGDKITF,"defaultdict(<class 'int'>, {'PAN': 1})"
+ENIHPITIGK,"defaultdict(<class 'int'>, {'PAN': 2})"
+EATGKLVVPRY,"defaultdict(<class 'int'>, {'PAN': 1})"
+QNIDPITIGK,"defaultdict(<class 'int'>, {'PAN': 1})"
+LVEPGDKITFEATGY,"defaultdict(<class 'int'>, {'PAN': 1})"
+LVVPRYAF,"defaultdict(<class 'int'>, {'PAN': 1})"
+EATVNLVVPRY,"defaultdict(<class 'int'>, {'PAN': 2})"
+PVEPGDKITF,"defaultdict(<class 'int'>, {'PAN': 1})"
+TTCQTPKGAINTSLPF,"defaultdict(<class 'int'>, {'PAN': 1})"
+EATENLVVPRY,"defaultdict(<class 'int'>, {'PAN': 1})"
+EATGNLVVLRY,"defaultdict(<class 'int'>, {'PAN': 1})"
+LVEPGDKITY,"defaultdict(<class 'int'>, {'PAN': 4})"
+EATGNLMVPRY,"defaultdict(<class 'int'>, {'PAN': 2})"
+ESTGNLVVPRY,"defaultdict(<class 'int'>, {'PAN': 1})"
+QNIHPITIRK,"defaultdict(<class 'int'>, {'PAN': 2})"
+LVEPADKITF,"defaultdict(<class 'int'>, {'PAN': 1})"
+AFAMERNAGSGIIF,"defaultdict(<class 'int'>, {'PAN': 1})"
+AMERNAGSGIIF,"defaultdict(<class 'int'>, {'PAN': 1})"
+LEEPGDKITF,"defaultdict(<class 'int'>, {'PAN': 3})"
+EATGNLLVPRY,"defaultdict(<class 'int'>, {'PAN': 1})"
+EATGNLVVARY,"defaultdict(<class 'int'>, {'PAN': 1})"
+LVQPGDKITF,"defaultdict(<class 'int'>, {'PAN': 1})"
+QVEPGDKITF,"defaultdict(<class 'int'>, {'PAN': 2})"
+LAEPGDKITF,"defaultdict(<class 'int'>, {'PAN': 1})"
+LVGPGDKITF,"defaultdict(<class 'int'>, {'PAN': 1})"
+LVEPGNKITF,"defaultdict(<class 'int'>, {'PAN': 1})"
+AATGNLVVPRY,"defaultdict(<class 'int'>, {'PAN': 1})"
+EATGNLVVPRFAF,"defaultdict(<class 'int'>, {'PAN': 1})"
+EAPGNLVVPRYAF,"defaultdict(<class 'int'>, {'PAN': 1})"
+LVETGDKITF,"defaultdict(<class 'int'>, {'PAN': 1})"
+EAAGNLVVPRY,"defaultdict(<class 'int'>, {'PAN': 1})"
+PITIGK,"defaultdict(<class 'int'>, {'PAN': 1})"
+AMERNAGSGIIISDTPF,"defaultdict(<class 'int'>, {'PAN': 1})"
+QNINPITIGK,"defaultdict(<class 'int'>, {'PAN': 1})"
+EATGNLVVPRYSF,"defaultdict(<class 'int'>, {'PAN': 1})"
+EATGNLVEPRYAF,"defaultdict(<class 'int'>, {'PAN': 1})"
+QNIHPIPIGK,"defaultdict(<class 'int'>, {'PAN': 1})"
+ISDTPVHDCNTTCQTPKGAINTSLPF,"defaultdict(<class 'int'>, {'PAN': 1})"
+AFAMERNAGSGF,"defaultdict(<class 'int'>, {'PAN': 1})"
+AMERNAGSGIIISDTPVHDCNTTCQTPKGAISTSLPF,"defaultdict(<class 'int'>, {'PAN': 1})"
+EATRNLVVPRY,"defaultdict(<class 'int'>, {'PAN': 1})"
+LVEPGAKITF,"defaultdict(<class 'int'>, {'PAN': 1})"
+EATGNLVVPRDAF,"defaultdict(<class 'int'>, {'PAN': 1})"
+LVEPGDKIKF,"defaultdict(<class 'int'>, {'PAN': 1})"
+QIIHPITIGK,"defaultdict(<class 'int'>, {'PAN': 1})"
+RVEPGDKITF,"defaultdict(<class 'int'>, {'PAN': 1})"
+LVEPGDNITF,"defaultdict(<class 'int'>, {'PAN': 1})"
+EATGNLVVPSY,"defaultdict(<class 'int'>, {'PAN': 1})"
+QNIHPIAIGK,"defaultdict(<class 'int'>, {'PAN': 1})"
+TFEATGNLVVPR,"defaultdict(<class 'int'>, {'PAN': 3})"
+ITFEATGNLVVPRYVFAMER,"defaultdict(<class 'int'>, {'PAN': 3})"
+LVKPGDKITFEATGNLVVPR,"defaultdict(<class 'int'>, {'PAN': 2})"
+LVKPGDK,"defaultdict(<class 'int'>, {'PAN': 1})"

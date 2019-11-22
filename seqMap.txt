@@ -5,206 +5,206 @@
          LVEPGDKITFEATGNLVVPRYAFAMERNAGSGIIISDTPVHDCNTTCQTPKGAINTSLPFQNIHPITIGKC    
 
 
-EGRMNYYWTLVEPGDK(1)
+EGRMNYYWTLVEPGDK(ARP:1, PAN:0)
 
-   MNYYWTLVEPGDK(482)
+   MNYYWTLVEPGDK(ARP:52, PAN:430)
 
-   MNYYWTLVEPGDKITFEATGNLVVPR(76)
+   MNYYWTLVEPGDKITFEATGNLVVPR(ARP:28, PAN:48)
                 _
-   MNYYWTLVEPGDKR(21)
+   MNYYWTLVEPGDKR(ARP:4, PAN:17)
          _
-   MNYYWTQVEPGDKITFEATGNLVVPR(3)
+   MNYYWTQVEPGDKITFEATGNLVVPR(ARP:2, PAN:1)
                 _
-   MNYYWTLVEPGDKRTFEATGNLVVPR(21)
+   MNYYWTLVEPGDKRTFEATGNLVVPR(ARP:0, PAN:21)
 
-   MNYYWTLVEPGDKITFEATGNLVVPRYAFAMER(33)
+   MNYYWTLVEPGDKITFEATGNLVVPRYAFAMER(ARP:0, PAN:33)
            _
-   MNYYWTLVKPGDKITFEATGNLVVPRYAFAMER(1)
+   MNYYWTLVKPGDKITFEATGNLVVPRYAFAMER(ARP:0, PAN:1)
            _
-   MNYYWTLVKPGDKITFEATGNLVVPR(2)
+   MNYYWTLVKPGDKITFEATGNLVVPR(ARP:0, PAN:2)
            _
-   MNYYWTLVKPGDK(1)
+   MNYYWTLVKPGDK(ARP:0, PAN:1)
 
-      YWTLVEPGDKITF(20)
+      YWTLVEPGDKITF(ARP:6, PAN:14)
       _
-      HWTLVEPGDKITF(1)
+      HWTLVEPGDKITF(ARP:0, PAN:1)
          _
-      YWTQVEPGDKITF(1)
+      YWTQVEPGDKITF(ARP:0, PAN:1)
        _
-      YCTLVEPGDKITF(2)
+      YCTLVEPGDKITF(ARP:0, PAN:2)
                 _
-      YWTLVEPGDKRTF(6)
+      YWTLVEPGDKRTF(ARP:0, PAN:6)
 
-       WTLVEPGDKITF(24)
+       WTLVEPGDKITF(ARP:8, PAN:16)
        _
-       RTLVEPGDKITF(1)
+       RTLVEPGDKITF(ARP:0, PAN:1)
          _
-       WTPVEPGDKITF(1)
+       WTPVEPGDKITF(ARP:0, PAN:1)
         _
-       WALVEPGDKITF(1)
+       WALVEPGDKITF(ARP:0, PAN:1)
                 _
-       WTLVEPGDKRTF(6)
+       WTLVEPGDKRTF(ARP:0, PAN:6)
          _
-       WTQVEPGDKITF(1)
+       WTQVEPGDKITF(ARP:0, PAN:1)
 
-        TLVEPGDK(3)
+        TLVEPGDK(ARP:0, PAN:3)
 
-        TLVEPGDKITF(291)
+        TLVEPGDKITF(ARP:7, PAN:284)
                 _
-        TLVEPGDKRTF(1)
+        TLVEPGDKRTF(ARP:0, PAN:1)
 
-        TLVEPGDKITFEATGNLVVPRYAF(9)
+        TLVEPGDKITFEATGNLVVPRYAF(ARP:3, PAN:6)
 
-        TLVEPGDKITFEATGNLVVPRY(1)
+        TLVEPGDKITFEATGNLVVPRY(ARP:0, PAN:1)
                    _
-        TLVEPGDKITFQATGNLVVPRYAF(1)
+        TLVEPGDKITFQATGNLVVPRYAF(ARP:0, PAN:1)
                 _
-        TLVEPGDKVTF(1)
+        TLVEPGDKVTF(ARP:0, PAN:1)
           _
-        TLIEPGDKITF(1)
+        TLIEPGDKITF(ARP:0, PAN:1)
           _
-        TLLEPGDKITF(1)
+        TLLEPGDKITF(ARP:0, PAN:1)
                        _
-        TLVEPGDKITFEATGY(1)
+        TLVEPGDKITFEATGY(ARP:0, PAN:1)
                   _
-        TLVEPGDKITY(4)
+        TLVEPGDKITY(ARP:0, PAN:4)
              _
-        TLVEPADKITF(1)
+        TLVEPADKITF(ARP:0, PAN:1)
           _
-        TLEEPGDKITF(3)
+        TLEEPGDKITF(ARP:0, PAN:3)
            _
-        TLVQPGDKITF(1)
+        TLVQPGDKITF(ARP:0, PAN:1)
           _
-        TLAEPGDKITF(1)
+        TLAEPGDKITF(ARP:0, PAN:1)
            _
-        TLVGPGDKITF(1)
+        TLVGPGDKITF(ARP:0, PAN:1)
               _
-        TLVEPGNKITF(1)
+        TLVEPGNKITF(ARP:0, PAN:1)
             _
-        TLVETGDKITF(1)
+        TLVETGDKITF(ARP:0, PAN:1)
         _
-        ILVEPGDKITF(1)
+        ILVEPGDKITF(ARP:0, PAN:1)
               _
-        TLVEPGAKITF(1)
+        TLVEPGAKITF(ARP:0, PAN:1)
         _
-        KLVEPGDKITF(1)
+        KLVEPGDKITF(ARP:0, PAN:1)
                  _
-        TLVEPGDKIKF(1)
+        TLVEPGDKIKF(ARP:0, PAN:1)
          _
-        TRVEPGDKITF(1)
+        TRVEPGDKITF(ARP:0, PAN:1)
                _
-        TLVEPGDNITF(1)
+        TLVEPGDNITF(ARP:0, PAN:1)
 
-                ITFEATGNLVVPR(541)
+                ITFEATGNLVVPR(ARP:64, PAN:477)
 
-                ITFEATGNLVVPRYAFAMER(2)
+                ITFEATGNLVVPRYAFAMER(ARP:0, PAN:2)
                 _
-                RTFEATGNLVVPR(3)
+                RTFEATGNLVVPR(ARP:0, PAN:3)
                               _
-                ITFEATGNLVVPRYVFAMER(3)
+                ITFEATGNLVVPRYVFAMER(ARP:0, PAN:3)
 
-                 TFEATGNLVVPR(3)
+                 TFEATGNLVVPR(ARP:0, PAN:3)
 
-                   EATGNLVVPRY(20)
+                   EATGNLVVPRY(ARP:4, PAN:16)
 
-                   EATGNLVVPRYAF(77)
+                   EATGNLVVPRYAF(ARP:15, PAN:62)
                               _
-                   EATGNLVVPRYVF(6)
+                   EATGNLVVPRYVF(ARP:5, PAN:1)
                        _
-                   EATGDLVVPRYAF(3)
+                   EATGDLVVPRYAF(ARP:0, PAN:3)
                    _
-                   QATGNLVVPRYAF(2)
+                   QATGNLVVPRYAF(ARP:0, PAN:2)
                        _
-                   EATGKLVVPRY(1)
+                   EATGKLVVPRY(ARP:0, PAN:1)
                       _
-                   EATVNLVVPRY(2)
+                   EATVNLVVPRY(ARP:0, PAN:2)
                       _
-                   EATENLVVPRY(1)
+                   EATENLVVPRY(ARP:0, PAN:1)
                            _
-                   EATGNLVVLRY(1)
+                   EATGNLVVLRY(ARP:0, PAN:1)
                          _
-                   EATGNLMVPRY(2)
+                   EATGNLMVPRY(ARP:0, PAN:2)
                     _
-                   ESTGNLVVPRY(1)
+                   ESTGNLVVPRY(ARP:0, PAN:1)
                          _
-                   EATGNLLVPRY(1)
+                   EATGNLLVPRY(ARP:0, PAN:1)
                            _
-                   EATGNLVVARY(1)
+                   EATGNLVVARY(ARP:0, PAN:1)
                    _
-                   AATGNLVVPRY(1)
+                   AATGNLVVPRY(ARP:0, PAN:1)
                              _
-                   EATGNLVVPRFAF(1)
+                   EATGNLVVPRFAF(ARP:0, PAN:1)
                      _
-                   EAPGNLVVPRYAF(1)
+                   EAPGNLVVPRYAF(ARP:0, PAN:1)
                      _
-                   EAAGNLVVPRY(1)
+                   EAAGNLVVPRY(ARP:0, PAN:1)
                               _
-                   EATGNLVVPRYSF(1)
+                   EATGNLVVPRYSF(ARP:0, PAN:1)
                           _
-                   EATGNLVEPRYAF(1)
+                   EATGNLVEPRYAF(ARP:0, PAN:1)
                       _
-                   EATRNLVVPRY(1)
+                   EATRNLVVPRY(ARP:0, PAN:1)
                              _
-                   EATGNLVVPRDAF(1)
+                   EATGNLVVPRDAF(ARP:0, PAN:1)
                             _
-                   EATGNLVVPSY(1)
+                   EATGNLVVPSY(ARP:0, PAN:1)
 
-                        LVVPRYAF(1)
+                        LVVPRYAF(ARP:0, PAN:1)
 
-                             YAFAMER(165)
+                             YAFAMER(ARP:52, PAN:113)
 
-                             YAFAMERNAGSGIIISDTPVHDCNTTCQTPK(2)
+                             YAFAMERNAGSGIIISDTPVHDCNTTCQTPK(ARP:0, PAN:2)
                               _
-                             YVFAMER(9)
+                             YVFAMER(ARP:0, PAN:9)
                                            _
-                              AFAMERNAGSGIIF(1)
+                              AFAMERNAGSGIIF(ARP:0, PAN:1)
                                          _
-                              AFAMERNAGSGF(1)
+                              AFAMERNAGSGF(ARP:0, PAN:1)
                                            _
-                                AMERNAGSGIIF(1)
+                                AMERNAGSGIIF(ARP:0, PAN:1)
                                                 _
-                                AMERNAGSGIIISDTPF(1)
+                                AMERNAGSGIIISDTPF(ARP:0, PAN:1)
                                                                _
-                                AMERNAGSGIIISDTPVHDCNTTCQTPKGAISTSLPF(1)
+                                AMERNAGSGIIISDTPVHDCNTTCQTPKGAISTSLPF(ARP:0, PAN:1)
 
-                                    NAGSGIIISDTPVHDCNTTCQTPK(32)
+                                    NAGSGIIISDTPVHDCNTTCQTPK(ARP:9, PAN:23)
 
-                                           ISDTPVHDCNTTCQTPKGAINTSLPF(1)
+                                           ISDTPVHDCNTTCQTPKGAINTSLPF(ARP:0, PAN:1)
 
-                                                     TTCQTPKGAINTSLPF(1)
+                                                     TTCQTPKGAINTSLPF(ARP:0, PAN:1)
 
-                                                        QTPKGAINTSLPF(1)
+                                                        QTPKGAINTSLPF(ARP:0, PAN:1)
 
-                                                            GAINTSLPFQNIHPITIGK(83)
+                                                            GAINTSLPFQNIHPITIGK(ARP:16, PAN:67)
                                                                          _
-                                                            GAINTSLPFQNIHQITIGK(17)
+                                                            GAINTSLPFQNIHQITIGK(ARP:13, PAN:4)
 
-                                                            GAINTSLPFQNIHPITIGKCPK(2)
+                                                            GAINTSLPFQNIHPITIGKCPK(ARP:1, PAN:1)
 
-                                                                     QNIHPITIGKCPKY(56)
+                                                                     QNIHPITIGKCPKY(ARP:8, PAN:48)
                                                                          _
-                                                                     QNIHQITIGKCPKY(5)
+                                                                     QNIHQITIGKCPKY(ARP:5, PAN:0)
                                                                                 _
-                                                                     QNIHPITIGKCAKY(1)
+                                                                     QNIHPITIGKCAKY(ARP:0, PAN:1)
                                                                      _
-                                                                     ENIHPITIGKCPKY(2)
+                                                                     ENIHPITIGKCPKY(ARP:0, PAN:2)
                                                                         _
-                                                                     QNIDPITIGKCPKY(1)
+                                                                     QNIDPITIGKCPKY(ARP:0, PAN:1)
                                                                                  _
-                                                                     QNIHPITIGKCPTY(1)
+                                                                     QNIHPITIGKCPTY(ARP:0, PAN:1)
                                                                              _
-                                                                     QNIHPITIRKCPKY(2)
+                                                                     QNIHPITIRKCPKY(ARP:0, PAN:2)
                                                                         _
-                                                                     QNINPITIGKCPKY(1)
+                                                                     QNINPITIGKCPKY(ARP:0, PAN:1)
                                                                            _
-                                                                     QNIHPIPIGKCPKY(1)
+                                                                     QNIHPIPIGKCPKY(ARP:0, PAN:1)
                                                                                _
-                                                                     QNIHPITIGKSPKY(1)
+                                                                     QNIHPITIGKSPKY(ARP:0, PAN:1)
                                                                       _
-                                                                     QIIHPITIGKCPKY(1)
+                                                                     QIIHPITIGKCPKY(ARP:0, PAN:1)
                                                                                 _
-                                                                     QNIHPITIGKCSKY(1)
+                                                                     QNIHPITIGKCSKY(ARP:0, PAN:1)
                                                                            _
-                                                                     QNIHPIAIGKCPKY(1)
+                                                                     QNIHPIAIGKCPKY(ARP:0, PAN:1)
 
-                                                                         PITIGKCPKY(1)
+                                                                         PITIGKCPKY(ARP:0, PAN:1)
