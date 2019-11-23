@@ -185,7 +185,7 @@ def mapOfSeqs(options, seqCount, seqInit, refProt):
 	seqInit = OrderedDict([(k, seqInit[k]) for k in sorted(seqInit, key=seqInit.get)])
 
 	# Write 
-	with open('seqMap.txt','w') as outFile:
+	with open(options['files']['seqMap.txt'],'w') as outFile:
 		outFile.writelines(str(idx)[0] for idx in indx_array)
 		outFile.write('\n')
 		outFile.writelines(str(idx)[1] for idx in indx_array)

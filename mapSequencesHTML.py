@@ -10,7 +10,6 @@ import os
 from operator import itemgetter
 from markdown2 import Markdown
 
-
 def reference_retreive(proteinID):
 
 	# Retrieve protein and get dictionnary of each peptide position
@@ -195,15 +194,8 @@ def mapOfSeqs(options, seqCount, seqInit, refProt):
 
 	# Write 
 	Markdowner = Markdown()
-	with open('seqMap.html','w') as outFile:
+	with open(options['files']['seqMap.html'],'w') as outFile:
 		outFile.write('<style>' + '\n' + 'p { \n' + 'line-height:0.1; \n' + 'font-family: "Courier New", Courier, monospace; \n' + '} \n' + '\n' +"</style>" +'\n')
-		# outFile.writelines(str(idx)[0] for idx in indx_array)
-		# outFile.write('\n')
-		# outFile.writelines(str(idx)[1] for idx in indx_array)
-		# outFile.write('\n')
-		# outFile.writelines(str(idx)[2] for idx in indx_array)
-		# outFile.write('\n')
-		# outFile.write('\n')
 		outFile.write(Markdowner.convert(refProt_string + '\n'))
 		outFile.write(Markdowner.convert('\n'))
 		for seq in list(seqInit.keys()):

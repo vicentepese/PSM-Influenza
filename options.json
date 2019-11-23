@@ -11,7 +11,9 @@
         "filt_AFLSA":"Data/filt_AFLSA.csv",
         "seqCount":"Outputs/seqCount.csv",
         "seqCountRange":"Outputs/seqCount.csv",
-        "mergedFiltMASS":"Data/mergedFiltMASS.csv"
+        "mergedFiltMASS":"Data/mergedFiltMASS.csv",
+        "seqMap.txt": "Outputs/seqMap.txt",
+        "seqMap.html":"Outputs/seqMap.html"
     },
 
     "filterData":"HA-",
