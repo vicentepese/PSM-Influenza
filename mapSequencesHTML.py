@@ -43,8 +43,12 @@ def mapSeqs(options, AFLSA):
 
 	# For each sequence 
 	pos_range = options['pos_range']
-
+	PTM = defaultdict(lambda: defaultdict(int))
+	seqCount = defaultdict(lambda: defaultdict(int))
+	seqCountRange = defaultdict(lambda: defaultdict(int))
+	seqInit = defaultdict(int)
 	seqMap = defaultdict(list)
+
 	for seq in AFLSA:
 
 		# Get initial position
@@ -56,46 +60,12 @@ def mapSeqs(options, AFLSA):
 			# Get sequence and ending position
 			AAseq = re.sub('\[.+?\]','',seq[1]).split('.')[1]
 			end_pos = init_pos  + len(AAseq)-1
-		else:
-			# Get sequence
-			AAseq = seq[1].split('.')[1]
-			end_pos = init_pos + len(AAseq)-1
 
-		# If initial position in the range, else check if any position overlap
-		if init_pos >= pos_range[0] and init_pos <= pos_range[1]:
-
-			# Map each position 
-			for pos, AA in zip(range(init_pos, (end_pos + 1)), AAseq):
-
-				seqMap[str(pos)].append(AA)
-		
-		elif end_pos >= pos_range[0] and end_pos <= pos_range[1]:
-
-			# Map each position 
-			for pos, AA in zip(range(init_pos, (end_pos + 1)), AAseq):
-
-				seqMap[str(pos)].append(AA)
+			# Store PTM 
+			PTM_instances = re.findall('\[(.*?)\]', seq[1], re.DOTALL)
+			for instance in PTM_instances:
+				PTM[AAseq][instance] += 1
 			
-	return seqMap
-
-def countSequences(options, AFLSA):
-
-	# For each sequence 
-	pos_range = options['pos_range']
-	seqCount = defaultdict(lambda: defaultdict(int))
-	seqCountRange = defaultdict(lambda: defaultdict(int))
-	seqInit = defaultdict(int)
-	for seq in AFLSA:
-
-		 # Get initial position
-		init_pos = int(seq[2])
-
-		# Remove PTM and compute ending positon, else no PTM and compute ending position
-		if '[' in seq[1]:
-			
-			# Get sequence and ending position
-			AAseq = re.sub('\[.+?\]','',seq[1]).split('.')[1]
-			end_pos = init_pos  + len(AAseq)-1
 		else:
 			# Get sequence
 			AAseq = seq[1].split('.')[1]
@@ -107,11 +77,16 @@ def countSequences(options, AFLSA):
 			# Count 
 			seqCount[AAseq][seq[3]] += 1
 
-			# Count in range 
+			# Count in range
 			seqCountRange[AAseq[0:(pos_range[1]-init_pos)]][seq[3]] += 1
-
+			
 			# Keep initial position 
 			seqInit[AAseq] = init_pos
+
+			# Map each position 
+			for pos, AA in zip(range(init_pos, (end_pos + 1)), AAseq):
+
+				seqMap[str(pos)].append(AA)
 		
 		elif end_pos >= pos_range[0] and end_pos <= pos_range[1]:
 
@@ -124,7 +99,13 @@ def countSequences(options, AFLSA):
 			# Keep initial position 
 			seqInit[AAseq] = init_pos
 
-	return seqCount, seqCountRange, seqInit
+			# Map each position 
+			for pos, AA in zip(range(init_pos, (end_pos + 1)), AAseq):
+
+				seqMap[str(pos)].append(AA)
+			
+	return seqMap, seqCount, seqCountRange, seqInit, PTM
+
 
 def findMutations(refProt, seq, init_pos):
 
@@ -145,7 +126,7 @@ def findMutations(refProt, seq, init_pos):
 
 	return pos_mut_idx
 
-def seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount):
+def seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount, PTM):
 
 	# For each mutation, add two _ before and after the idx
 	seqMark = seq 
@@ -158,7 +139,12 @@ def seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount):
 		pos_mut_idx = [pos + len(options['MarkdownHigh']['init']) + len(options['MarkdownHigh']['end']) for pos in pos_mut_idx]
 
 	# Add spaces until initial position 
-	seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos)) + seqMark + '(ARP:' + str(seqCount[seq]['ARP']) + ', PAN:' + str(seqCount[seq]['PAN']) +  ')'
+	seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos)) + seqMark + '(ARP:' + str(seqCount[seq]['ARP']) + ', PAN:' + str(seqCount[seq]['PAN']) +  ')' 
+
+	# Add PTMS at the end 
+	for ptm, count in list(PTM[seq].items()):
+		seqMark = seqMark + ' // ' + '__' + ptm + '__' + ':' + str(count)
+
 	# Converto HMLT 
 	Markdowner = Markdown()
 	seqHTML = Markdowner.convert(seqMark + '\n')
@@ -166,7 +152,7 @@ def seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount):
 	return seqHTML
 
 
-def mapOfSeqs(options, seqCount, seqInit, refProt):
+def mapOfSeqs(options, seqCount, seqInit, refProt, PTM):
 
 	# Create array of positions: min initial pos to max ending pos
 	init_pos = min(seqInit[seq] for seq in list(seqInit.keys()))
@@ -185,7 +171,7 @@ def mapOfSeqs(options, seqCount, seqInit, refProt):
 		pos_mut_idx = findMutations(refProt, seq, seq_init_pos)
 
 		# Create string in HTML format and store in dictionnary 
-		seqHTML = seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount)
+		seqHTML = seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount, PTM)
 		seqString[seq] = seqHTML
 
 
@@ -218,14 +204,12 @@ def main():
 	# Import MASSdata
 	AFLSA = importAFLSA(options)
 
-	# Map sequences 
-	seqMap = mapSeqs(options, AFLSA)
+	# Map sequences and count
+	seqMap, seqCount, seqCountRange, seqInit, PTM = mapSeqs(options, AFLSA)
 
+	# Summarize to unique values to target mutations
 	for pos in list(seqMap.keys()):
 		seqMap[pos] = list(np.unique(np.asarray(seqMap[pos])))
-
-	# Count sequences
-	seqCount, seqCountRange, seqInit = countSequences(options, AFLSA)
 
 	# Write seqCount and seqCounRange
 	with open(options['files']['seqCount'],'w') as outFile:
@@ -241,7 +225,7 @@ def main():
 			writer.writerow([seq, seqCountRange[seq]])
 
 	# Create map of sequences 
-	mapOfSeqs(options, seqCount, seqInit, refProt)
+	mapOfSeqs(options, seqCount, seqInit, refProt, PTM)
 
 
 
