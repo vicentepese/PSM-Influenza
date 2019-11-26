@@ -161,7 +161,7 @@ def mapOfSeqs(options, seqCount, seqInit, refProt, PTM):
 	# Indexed protein string 
 	pos_range = options['pos_range']
 	refProt_string = [refProt[pos] for pos in list(refProt.keys()) if (pos >= pos_range[0]) & (pos <= pos_range[1])]
-	refProt_string = '&nbsp;'*(pos_range[0] - init_pos) + ''.join(refProt_string) + ' '*(ending_pos - pos_range[1])
+	refProt_string = '&nbsp;'*(pos_range[0] - init_pos - 4) + '250.' + ''.join(refProt_string) + ' '*(ending_pos - pos_range[1])
 
 	# Create string for each sequence 
 	seqString = defaultdict(str)
@@ -183,7 +183,7 @@ def mapOfSeqs(options, seqCount, seqInit, refProt, PTM):
 	with open(options['files']['seqMap.html'],'w') as outFile:
 		outFile.write('<style>' + '\n' + 'p { \n' + 'line-height:0.1; \n' + 'font-family: "Courier New", Courier, monospace; \n' + '} \n' + '\n' +"</style>" +'\n')
 		outFile.write(Markdowner.convert(refProt_string + '\n'))
-		outFile.write(Markdowner.convert('\n'))
+		outFile.write(Markdowner.convert('&nbsp; \n'))
 		for seq in list(seqInit.keys()):
 			outFile.write(seqString[seq])
 
