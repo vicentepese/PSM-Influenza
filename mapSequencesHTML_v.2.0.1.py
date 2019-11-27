@@ -10,7 +10,7 @@ import os
 from operator import itemgetter
 from markdown2 import Markdown
 import random
-random.seed(100)
+random.seed(200)
 
 def reference_retreive(proteinID):
 
@@ -133,16 +133,15 @@ def getRandomColor(options, PTM_count):
 		for ptm in list(PTM_count[seq].keys()):
 			uniquePTM[ptm] += 1
 
-	r = lambda: random.randint(0,255)
-	color = ['#%02X%02X%02X' % (r(),r(),r()) for i in range(0,len(list(uniquePTM.keys())))]
+	# Create color dictionnary	
+	r = lambda: random.randint(75,200)
+	color = {PTM: ['<span style=\"background: '+'#%02X%02X%02X; font-weight: bold' % (r(),r(),r()) + '\">',"</span>"] for PTM in list(uniquePTM.keys())}
 
 	return color
 
 def clearFragment(seqMark):
-
 	if '[' in seqMark:
 		seqMark = re.sub('\[.+?\]','',seqMark)
-	
 	return seqMark
 			
 
@@ -151,11 +150,15 @@ def seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount, PT
 	# Clear fragment 
 	seqMark = clearFragment(seq)
 
+	if 'NAGSGIIISDTPVHDCNTTCQTP' in seqMark:
+		print('stop')
+
 	# Initialize 
 	PTM = defaultdict(int)
 	PTM_pos = list()
 	PTM_type = list()
 
+	# Get PTM type and location
 	# TODO: merge mutations and PTMs
 	PTM_instances = re.findall('\[(.*?)\]', seq, re.DOTALL)
 	PTM_idx = re.finditer('\[(.*?)\]', seq, re.DOTALL)
@@ -163,43 +166,30 @@ def seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount, PT
 	num_snps = 0
 	for instance, idx in zip(PTM_instances, PTM_idx):
 		PTM[instance] += 1
-		PTM_pos.append(idx.start()-idx_comp)
+		PTM_pos.append(idx.start() -1 -idx_comp)
 		PTM_type.append(instance)
 		idx_comp += len(instance) +2
 		num_snps += 1
-
+	# Remove negative 
+	PTM_pos = list(np.asarray(PTM_pos).clip(0))
 	# For each mutation, create Markdown string 
-	for i in range(num_snps):
-
+	for i in range(0,num_snps):
 		# Create string in Markdown and update indexing
-		seqMark = seqMark[0:PTM_pos[i]] + options['MarkdownHigh']['init'] + seqMark[PTM_pos[i]] + options['MarkdownHigh']['end'] + seqMark[(PTM_pos[i]+1):]
-		PTM_pos = [pos + len(options['MarkdownHigh']['init']) + len(options['MarkdownHigh']['end']) for pos in PTM_pos]
+		seqMark = seqMark[0:PTM_pos[i]] + color[PTM_type[i]][0] + seqMark[PTM_pos[i]] + color[PTM_type[i]][1] + seqMark[(PTM_pos[i]+1):]
+		PTM_pos = [pos + len(color[PTM_type[i]][0]) + len(color[PTM_type[i]][1]) for pos in PTM_pos]
+	
+	# Append initial location and ARP and PAN proportion
+	seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos)) + seqMark + ' \(ARP:{:.2%}' ' PAN:{:.2%}\)'.format(seqCount[seq]['ARP']/vaccSample['ARP'], seqCount[seq]['PAN']/vaccSample['PAN'])
 
-
-	# Count number of SNPs
-	# snps_num = 0
-	# for snp in list(PTM_pos[seq].keys()):
-	# 	snps_num += PTM_pos[seq][snp]
-
-	# For i in range(0,number of snps)
-	# for i in range(0, snps_num):
-	# 	# Create string Markdown and update index
-	# 	seqMark = seqMark[0:(pos_mut_idx[i])] + options['MarkdownHigh']['init'] + seqMark[pos_mut_idx[i]] + options['MarkdownHigh']['end'] + seqMark[(pos_mut_idx[i]+1):]
-	# For i in range(0, number of mutations)
-
-		# Create Markdown string and update index
-
-	# seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos)) + seqMark + '\(ARP:{:.2%}' ' PAN:{:.2%}\)'.format(seqCount[seq]['ARP']/vaccSample['ARP'], seqCount[seq]['PAN']/vaccSample['PAN'])
-
-	# # Add PTMS at the end 
-	# for ptm, count in list(PTM[seq].items()):
-	# 	seqMark = seqMark + ' // ' + '__' + ptm + '__' + ':' + str(count)
+	# Add PTMS at the end 
+	for ptm in np.unique(np.asarray(PTM_type)):
+		seqMark = seqMark + ' // ' + color[ptm][0] + ptm + color[ptm][1] 
 
 	# # Convert to HTML
-	# Markdowner = Markdown()
-	# seqHTML = Markdowner.convert(seqMark + '\n')
+	Markdowner = Markdown()
+	seqHTML = Markdowner.convert(seqMark + '\n')
 
-	return None
+	return seqHTML
 
 
 def mapOfSeqs(options, seqCount, seqInit, refProt, PTM_count, vaccSample, color):
@@ -220,8 +210,8 @@ def mapOfSeqs(options, seqCount, seqInit, refProt, PTM_count, vaccSample, color)
 		pos_mut_idx = findMutations(refProt, seq, seq_init_pos)
 
 		# Create string in HTML format and store in dictionnary 
-		seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount, PTM_count, vaccSample, color)
-		#seqString[seq] = seqHTML
+		seqHTML = seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount, PTM_count, vaccSample, color)
+		seqString[seq] = seqHTML
 
 
 	# Order by initial position
@@ -234,7 +224,6 @@ def mapOfSeqs(options, seqCount, seqInit, refProt, PTM_count, vaccSample, color)
 		outFile.write(Markdowner.convert(refProt_string + '\n'))
 		outFile.write(Markdowner.convert('&nbsp; \n'))
 		for seq in list(seqInit.keys()):
-
 			outFile.write(seqString[seq])
 
 
