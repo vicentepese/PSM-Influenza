@@ -13,12 +13,13 @@
         "seqCountRange":"Outputs/seqCount.csv",
         "mergedFiltMASS":"Data/mergedFiltMASS.csv",
         "seqMap.txt": "Outputs/seqMap.txt",
-        "seqMap.html":"Outputs/seqMap.html"
+        "seqMap.html":"Outputs/seqMap.html",
+        "seqMapOrex.html":"Outputs/seqMapOrex.html"
     },
 
     "filterData":"HA-",
     "filterDataBash":"./filterData.sh",
-    "pos_range": [250,320],
+    "pos_range": [273,310],
     "refProt":"ADE29085.1",
     
     "MarkdownHigh":{
