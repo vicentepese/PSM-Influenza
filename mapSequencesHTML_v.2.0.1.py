@@ -136,6 +136,8 @@ def getRandomColor(options, PTM_count):
 	# Create color dictionnary	
 	r = lambda: random.randint(75,200)
 	color = {PTM: ['<span style=\"background: '+'#%02X%02X%02X; font-weight: bold' % (r(),r(),r()) + '\">',"</span>"] for PTM in list(uniquePTM.keys())}
+	color['mutation'] = ['<span style=\"border-style: solid;  border-width: 2px\">','</span>']
+	color['mutmatch'] = ['; border-style: solid; border-width: 2px']
 
 	return color
 
@@ -150,34 +152,56 @@ def seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount, PT
 	# Clear fragment 
 	seqMark = clearFragment(seq)
 
-	if 'NAGSGIIISDTPVHDCNTTCQTP' in seqMark:
-		print('stop')
-
 	# Initialize 
 	PTM = defaultdict(int)
 	PTM_pos = list()
 	PTM_type = list()
 
 	# Get PTM type and location
-	# TODO: merge mutations and PTMs
 	PTM_instances = re.findall('\[(.*?)\]', seq, re.DOTALL)
 	PTM_idx = re.finditer('\[(.*?)\]', seq, re.DOTALL)
 	idx_comp = 0
-	num_snps = 0
+	num_ptms = 0
 	for instance, idx in zip(PTM_instances, PTM_idx):
 		PTM[instance] += 1
 		PTM_pos.append(idx.start() -1 -idx_comp)
 		PTM_type.append(instance)
 		idx_comp += len(instance) +2
-		num_snps += 1
+		num_ptms += 1
+
 	# Remove negative 
 	PTM_pos = list(np.asarray(PTM_pos).clip(0))
-	# For each mutation, create Markdown string 
-	for i in range(0,num_snps):
+
+	# For each SNP, create Markdown string 
+	PTM_pos_loop = PTM_pos
+	for i in range(num_ptms):
 		# Create string in Markdown and update indexing
-		seqMark = seqMark[0:PTM_pos[i]] + color[PTM_type[i]][0] + seqMark[PTM_pos[i]] + color[PTM_type[i]][1] + seqMark[(PTM_pos[i]+1):]
-		PTM_pos = [pos + len(color[PTM_type[i]][0]) + len(color[PTM_type[i]][1]) for pos in PTM_pos]
+		seqMark = seqMark[0:PTM_pos_loop[i]] + color[PTM_type[i]][0] + seqMark[PTM_pos_loop[i]] + color[PTM_type[i]][1] + seqMark[(PTM_pos_loop[i]+1):]
+		PTM_pos_loop = [pos + len(color[PTM_type[i]][0]) + len(color[PTM_type[i]][1]) for pos in PTM_pos_loop]
 	
+	# Highlight mutations 
+	if len(pos_mut_idx):
+		if not any(mut in PTM_pos for mut in pos_mut_idx):
+			pos_mut_idx  = [pos + (len(color[list(color.keys())[0]][0]) + len(color[list(color.keys())[0]][1]))*len(list(filter(lambda x: x < pos, PTM_pos))) for pos in pos_mut_idx]
+			for i in range(0,len(pos_mut_idx)):
+				seqMark = seqMark[0:pos_mut_idx[i]] + color['mutation'][0] + seqMark[pos_mut_idx[i]] + color['mutation'][1] + seqMark[(pos_mut_idx[i]+1):]
+				pos_mut_idx = [pos + len(color['mutation'][0]) + len(color['mutation'][1]) for pos in pos_mut_idx]
+		else:
+
+			# Find matches of mutation and PTM (intersection) and remove them from original list
+			pos_mut_match = list(set(pos_mut_idx).intersection(PTM_pos))
+			for pos in pos_mut_match:
+				pos_mut_idx.remove(pos)
+
+			# Hightlight mutations
+			pos_mut_idx  = [pos + (len(color[list(color.keys())[0]][0]) + len(color[list(color.keys())[0]][1]))*len(list(filter(lambda x: x < pos, PTM_pos))) for pos in pos_mut_idx]
+			for i in range(0,len(pos_mut_idx)):
+				seqMark = seqMark[0:pos_mut_idx[i]] + color['mutation'][0] + seqMark[pos_mut_idx[i]] + color['mutation'][1] + seqMark[(pos_mut_idx[i]+1):]
+				pos_mut_idx = [pos + len(color['mutation'][0]) + len(color['mutation'][1]) for pos in pos_mut_idx]
+			pos_mut_match  = [pos + (len(color[list(color.keys())[0]][0]) + len(color[list(color.keys())[0]][1])) * (len(list(filter(lambda x: x < pos, PTM_pos)))) + len(color[list(color.keys())[0]][0]) for pos in pos_mut_match]
+			for i in range(0, len(pos_mut_match)):
+				seqMark = seqMark[0:pos_mut_match[i]-2] + color['mutmatch'][0] + seqMark[pos_mut_match[i]-2:]
+				pos_mut_match = [pos + len(color['mutmatch'][0]) for pos in pos_mut_match]
 	# Append initial location and ARP and PAN proportion
 	seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos)) + seqMark + ' \(ARP:{:.2%}' ' PAN:{:.2%}\)'.format(seqCount[seq]['ARP']/vaccSample['ARP'], seqCount[seq]['PAN']/vaccSample['PAN'])
 
@@ -200,7 +224,7 @@ def mapOfSeqs(options, seqCount, seqInit, refProt, PTM_count, vaccSample, color)
 	# Indexed protein string 
 	pos_range = options['pos_range']
 	refProt_string = [refProt[pos] for pos in list(refProt.keys()) if (pos >= pos_range[0]) & (pos <= pos_range[1])]
-	refProt_string = '&nbsp;'*(pos_range[0] - init_pos - 4) + '250.' + ''.join(refProt_string)  
+	refProt_string = '&nbsp;'*(pos_range[0] - init_pos - 4) + str(pos_range[0]) +'.' + ''.join(refProt_string)  
 
 	# Create string for each sequence 
 	seqString = defaultdict(str)
