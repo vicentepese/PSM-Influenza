@@ -14,7 +14,8 @@
         "mergedFiltMASS":"Data/mergedFiltMASS.csv",
         "seqMap.txt": "Outputs/seqMap.txt",
         "seqMap.html":"Outputs/seqMap.html",
-        "seqMapOrex.html":"Outputs/seqMapOrex.html"
+        "seqMapOrex.html":"Outputs/seqMapOrex.html",
+        "mapPTM.html":"Outputs/mapPTM.html"
     },
 
     "filterData":"HA-",
