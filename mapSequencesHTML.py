@@ -71,20 +71,11 @@ def parseSequences(options, data):
 			end_pos = init_pos + len(AAseq)-1
 
 		# If initial position in the range, else check if any position overlap
-		if init_pos >= pos_range[0] and init_pos <= pos_range[1]:
+		if not(end_pos < options['pos_range'][0]) and not(init_pos > options['pos_range'][1]):
 
 			# Count and count in range
 			seqCount[AAseq][seq[3]] += 1
 			
-			# Keep initial position 
-			seqInit[AAseq] = init_pos
-
-		
-		elif end_pos >= pos_range[0] and end_pos <= pos_range[1]:
-
-			# Count and count in range
-			seqCount[AAseq][seq[3]] += 1
-
 			# Keep initial position 
 			seqInit[AAseq] = init_pos
 
@@ -112,8 +103,6 @@ def findMutations(refProt, seq, init_pos):
 		pos_mut_idx = []
 
 	return pos_mut_idx
-
-
 
 def getVaccineSample(seqCount):
 
@@ -161,20 +150,18 @@ def seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount, PT
 	PTM_instances = re.findall('\[(.*?)\]', seq, re.DOTALL)
 	PTM_idx = re.finditer('\[(.*?)\]', seq, re.DOTALL)
 	idx_comp = 0
-	num_ptms = 0
 	for instance, idx in zip(PTM_instances, PTM_idx):
 		PTM[instance] += 1
 		PTM_pos.append(idx.start() -1 -idx_comp)
 		PTM_type.append(instance)
 		idx_comp += len(instance) +2
-		num_ptms += 1
 
-	# Remove negative 
-	PTM_pos = list(np.asarray(PTM_pos).clip(0))
+	# Remove negative and update number or ptms 
+	PTM_pos = [item for item in PTM_pos if item >=0]
 
-	# For each SNP, create Markdown string 
+	# For each PTM, create Markdown string 
 	PTM_pos_loop = PTM_pos
-	for i in range(num_ptms):
+	for i in range(len(PTM_pos)):
 		# Create string in Markdown and update indexing
 		seqMark = seqMark[0:PTM_pos_loop[i]] + color[PTM_type[i]][0] + seqMark[PTM_pos_loop[i]] + color[PTM_type[i]][1] + seqMark[(PTM_pos_loop[i]+1):]
 		PTM_pos_loop = [pos + len(color[PTM_type[i]][0]) + len(color[PTM_type[i]][1]) for pos in PTM_pos_loop]
@@ -210,7 +197,7 @@ def seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount, PT
 	for ptm in np.unique(np.asarray(PTM_type)):
 		seqMark = seqMark + ' // ' + color[ptm][0] + ptm + color[ptm][1] 
 
-	# # Convert to HTML
+	# Convert to HTML
 	Markdowner = Markdown()
 	seqHTML = Markdowner.convert(seqMark + '\n')
 
@@ -237,7 +224,6 @@ def mapOfSeqs(options, seqCount, seqInit, refProt, PTM_count, vaccSample, color)
 		# Create string in HTML format and store in dictionnary 
 		seqHTML = seqMutString(options, seq, pos_mut_idx, init_pos, seq_init_pos, seqCount, PTM_count, vaccSample, color)
 		seqString[seq] = seqHTML
-
 
 	# Order by initial position
 	seqInit = OrderedDict([(k, seqInit[k]) for k in sorted(seqInit, key=seqInit.get)])

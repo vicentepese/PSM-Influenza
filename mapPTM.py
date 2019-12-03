@@ -50,11 +50,12 @@ def map_PTMs(options, data, refProt):
 
         # Count 
         AAnonPTM = re.sub('\[.+?\]','',seq[1]).split('.')[1]
+        end_pos = init_pos + len(AAnonPTM)
         for i in range(int(seq[2]), int(seq[2]) + len(AAnonPTM)):
             vaccSample[str(i)][AAnonPTM[i-init_pos]][seq[3]] += 1
 
         # If initial position in range and there is a PTM
-        if init_pos >= options['pos_range'][0] and init_pos <= options['pos_range'][1] and  '[' in seq[1]:
+        if not(end_pos < options['pos_range'][0]) and not(init_pos > options['pos_range'][1]) and  '[' in seq[1]:
 
             PTM_idx = re.finditer('\[(.*?)\]', AAseq, re.DOTALL)
             PTM_instances = re.findall('\[(.*?)\]', AAseq, re.DOTALL)
