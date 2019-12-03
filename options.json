@@ -15,7 +15,8 @@
         "seqMap.txt": "Outputs/seqMap.txt",
         "seqMap.html":"Outputs/seqMap.html",
         "seqMapOrex.html":"Outputs/seqMapOrex.html",
-        "mapPTM.html":"Outputs/mapPTM.html"
+        "mapPTM.html":"Outputs/mapPTM.html",
+        "uniqueSeqsPTM.html":"Outputs/uniqueSeqsPTM.html"
     },
 
     "filterData":"HA-",
@@ -26,5 +27,9 @@
     "MarkdownHigh":{
         "init":"<span style=\"color: red\">",
         "end":"</span>"
+    },
+
+    "html":{
+        "scroll-template":"utils/scrolling_template.html"
     }
 }
