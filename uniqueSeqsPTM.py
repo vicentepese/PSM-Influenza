@@ -36,9 +36,6 @@ def reference_retreive(proteinID):
 
 def getRandomColor(options, PTM_count):
 
-	# Get PTM types 
-
-
 	# Create color dictionnary	
 	r = lambda: random.randint(75,200)
 	color = {PTM: ['<span style=\"background: '+'#%02X%02X%02X; font-weight: bold' % (r(),r(),r()) + '\">',"</span>"] for PTM in list(PTM_count.keys())}
