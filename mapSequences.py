@@ -9,10 +9,6 @@ import re
 import os 
 from operator import itemgetter
 
-class Format:
-	underline = '\033[0m]'
-	end = '\033[4m]'
-
 def reference_retreive(proteinID):
 
 	# Retrieve protein and get dictionnary of each peptide position
@@ -84,9 +80,7 @@ def mapSeqs(options, AFLSA):
 def countSequences(options, AFLSA):
 
 	# For each sequence 
-	pos_range = options['pos_range']
 	seqCount = defaultdict(lambda: defaultdict(int))
-	seqCountRange = defaultdict(lambda: defaultdict(int))
 	seqInit = defaultdict(int)
 	for seq in AFLSA:
 
@@ -105,29 +99,15 @@ def countSequences(options, AFLSA):
 			end_pos = init_pos + len(AAseq)-1
 
 		# If initial position in the range, else check if any position overlap
-		if init_pos >= pos_range[0] and init_pos <= pos_range[1]:
+		if not(end_pos < options['pos_range'][0]) and not(init_pos > options['pos_range'][1]):
 
 			# Count 
 			seqCount[AAseq][seq[3]] += 1
 
-			# Count in range 
-			seqCountRange[AAseq[0:(pos_range[1]-init_pos)]][seq[3]] += 1
-
-			# Keep initial position 
-			seqInit[AAseq] = init_pos
-		
-		elif end_pos >= pos_range[0] and end_pos <= pos_range[1]:
-
-			# Count 
-			seqCount[AAseq][seq[3]] += 1
-
-			# Count in range 
-			seqCountRange[AAseq[pos_range[0] - init_pos:]][seq[3]] += 1
-
 			# Keep initial position 
 			seqInit[AAseq] = init_pos
 
-	return seqCount, seqCountRange, seqInit
+	return seqCount, seqInit
 
 def findMutations(refProt, seq, init_pos):
 
@@ -223,7 +203,7 @@ def main():
 		seqMap[pos] = list(np.unique(np.asarray(seqMap[pos])))
 
 	# Count sequences
-	seqCount, seqCountRange, seqInit = countSequences(options, AFLSA)
+	seqCount, seqInit = countSequences(options, AFLSA)
 
 	# Write seqCount and seqCounRange
 	with open(options['files']['seqCount'],'w') as outFile:
@@ -231,12 +211,6 @@ def main():
 		writer.writerow(['seq','count'])
 		for seq in list(seqCount.keys()):
 			writer.writerow([seq, seqCount[seq]])
-	
-	with open(options['files']['seqCountRange'],'w') as outFile:
-		writer = csv.writer(outFile)
-		writer.writerow(['seq','count'])
-		for seq in list(seqCountRange.keys()):
-			writer.writerow([seq, seqCountRange[seq]])
 
 	# Create map of sequences 
 	mapOfSeqs(options, seqCount, seqInit, refProt)

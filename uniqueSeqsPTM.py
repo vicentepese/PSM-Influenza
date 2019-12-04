@@ -103,18 +103,22 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt):
 		PTM_pos_loop = list(seqPTM[seq].keys())
 		PTM_pos_loop.sort()
 		for i in range(0,len(PTM_pos_loop)):
-			seqMark = seqMark[0:PTM_pos_loop[i]] + color['red'][0] + seqMark[PTM_pos_loop[i]] + color['red'][1] + seqMark[(PTM_pos_loop[i]+1):]
+			seqMark = seqMark[0:PTM_pos_loop[i]] + color['red'][0] + seqMark[PTM_pos_loop[i]] + \
+				 color['red'][1] + seqMark[(PTM_pos_loop[i]+1):]
 			PTM_pos_loop = [pos + len(color['red'][0]) + len(color['red'][1]) for pos in PTM_pos_loop]
 
 		# Append initial location and ARP and PAN proportion 
 		seq_init_pos = seqInit[seq]
-		seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos)) + seqMark 
+		seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos)) + seqMark + \
+			'(ARP: {0}, PAN: {1}'.format(seqCount[seq]['ARP'], seqCount[seq]['PAN']) + ')' 
 		seqPos = list(seqPTM[seq].keys())
 		seqPos.sort()
 		for pos in seqPos:
-			seqMark = seqMark + ' // ' + '__' + str(pos) + '__: '
+			seqMark = seqMark +  ' // ' + '__' + str(pos) + '__: '
 			for ptm in list(seqPTM[seq][pos].keys()):
-				 seqMark = seqMark + color[ptm][0] + ptm + color[ptm][1] + ' \(ARP:{:.2%}' ' PAN:{:.2%}\)'.format(div0(seqPTM[seq][pos][ptm]['ARP'],seqCount[seq]['ARP']), div0(seqPTM[seq][pos][ptm]['PAN'],seqCount[seq]['PAN']))
+				 seqMark = seqMark + color[ptm][0] + ptm + color[ptm][1] + \
+					  ' \(ARP:{:.2%}' ' PAN:{:.2%}\) '.format(div0(seqPTM[seq][pos][ptm]['ARP'],seqCount[seq]['ARP']),\
+						   div0(seqPTM[seq][pos][ptm]['PAN'],seqCount[seq]['PAN']))
 
 		seqHTML[seq] = Markdowner.convert(seqMark + '\n')
 	
