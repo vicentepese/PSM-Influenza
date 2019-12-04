@@ -15,7 +15,7 @@ Each script is desined to perform a specific task, yet all share the same `optio
 
 ### mapSequences.py
 
-First, the sequence of the filtered data (thus, only the *HA-* proteins) are mapped for each position between the range set in `options.json` ) &mdash ergo, the sequence of Aminoacids (AA) is written for each position between the set position range. Only sequences that overlap at least one position with the defined position range are considered. Posttranslational Modifications (PTM), defined between squared brackets in the sequence (\[\]), have been removed of the sequence (not affecting the indexing of the positions). 
+First, the sequence of the filtered data (thus, only the *HA-* proteins) are mapped for each position between the range set in `options.json` ) &mdash; ergo, the sequence of Aminoacids (AA) is written for each position between the set position range. Only sequences that overlap at least one position with the defined position range are considered. Posttranslational Modifications (PTM), defined between squared brackets in the sequence (\[\]), have been removed of the sequence (not affecting the indexing of the positions). 
 
 A map for each position within the range defined in `options.json` is created in order to find potential mutations. Then, each sequence is counted for both vaccines. Finally, sequences are mapped based on their initial position, and refered to the protein of reference. 
 
