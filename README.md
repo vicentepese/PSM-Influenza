@@ -41,10 +41,3 @@ The output is a _.html_ file that highlights in  <span color='red'>red</span> th
 
 __*Under construction*__
 
-
-
-
-
-
-
-Finally, in order to visually assess the mutations, each sequence is chronologically sorted based on their initial positions, and compared to a reference protein (_refProt_ in `options.json`). The number of repetitions of the sequence for each strain is included at the end of the positions. Mutations have been highlighted
