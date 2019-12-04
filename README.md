@@ -2,7 +2,7 @@
 This repository was designed to assess the relation between Narcolepsy and the Influenza vaccine through the study of MASSpect protein sequences in two Influenza Virus Vaccine strains (_PAN_ and _APR_).
 
 #### Preparation 
-The given data is filtered, taking only the instances of the _HA-_ proteins (19<sup>th<\sup> column of the given data). Only the name of the protein, the sequence, and the initial position are taken. The sequence of peptides of reference si retrieved from _[Entrez]_(https://www.ncbi.nlm.nih.gov/Class/MLACourse/Original8Hour/Entrez/)
+The given data is filtered, taking only the instances of the _HA-_ proteins (19<sup>th</sup> column of the given data). Only the name of the protein, the sequence, and the initial position are taken. The sequence of peptides of reference si retrieved from [Entrez](https://www.ncbi.nlm.nih.gov/Class/MLACourse/Original8Hour/Entrez/)
 
 #### Sequence mapping and counting
 
