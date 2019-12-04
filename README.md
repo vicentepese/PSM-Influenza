@@ -37,6 +37,10 @@ The script starts retrieving the protein of reference and loading the data. Then
 
 The output is a _.html_ file that highlights in  <span color='red'>red</span> the location of the PTMS, and for such locations includes the type of location found in each position, and the frequency of sequences that presented such PTM (for that sequence).
 
+### chiSquarePos.py
+
+__*Under construction*__
+
 
 
 
