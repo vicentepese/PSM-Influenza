@@ -8,6 +8,7 @@ import csv
 from collections import defaultdict, OrderedDict
 import re 
 from markdown2 import Markdown
+from scipy import stats 
 
 def importData(options):
 
@@ -37,7 +38,7 @@ def map_PTMs(options, data, refProt):
 
     # Initialize 
     PTM_map = defaultdict()
-    for pos in list(refProt.keys()):
+    for pos in refProt:
         PTM_map[pos] = defaultdict(lambda: defaultdict(int))
     vaccSample = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
 
@@ -45,42 +46,83 @@ def map_PTMs(options, data, refProt):
     for seq in data:
 
         # Get initial position and sequence of AA
-        init_pos = int(seq[2])
         AAseq = seq[1][2:-2]
-
-        # Count 
-        AAnonPTM = re.sub('\[.+?\]','',seq[1]).split('.')[1]
+        AAnonPTM = re.sub('\[.+?\]','',AAseq)
+        init_pos = int(seq[2])
         end_pos = init_pos + len(AAnonPTM)
-        for i in range(int(seq[2]), int(seq[2]) + len(AAnonPTM)):
-            vaccSample[str(i)][AAnonPTM[i-init_pos]][seq[3]] += 1
 
         # If initial position in range and there is a PTM
-        if not(end_pos < options['pos_range'][0]) and not(init_pos > options['pos_range'][1]) and  '[' in seq[1]:
+        if not(end_pos < options['pos_range'][0]) and not(init_pos > options['pos_range'][1]):
 
-            PTM_idx = re.finditer('\[(.*?)\]', AAseq, re.DOTALL)
-            PTM_instances = re.findall('\[(.*?)\]', AAseq, re.DOTALL)
+            if '[' in seq[1]:
 
-            # For each PTM
-            idx_cumm = 0
-            for instance, idx in zip(PTM_instances, PTM_idx):
+                PTM_idx = re.finditer('\[(.*?)\]', AAseq, re.DOTALL)
+                PTM_instances = re.findall('\[(.*?)\]', AAseq, re.DOTALL)
 
-                # Find position 
-                ptm_pos = init_pos + idx.start() - 1 - idx_cumm
-                PTM_map[ptm_pos][instance][seq[3]] += 1
-                idx_cumm += len(instance) + 2
+                # For each PTM
+                idx_cumm = 0
+                for instance, idx in zip(PTM_instances, PTM_idx):
+
+                    # Find position 
+                    ptm_pos = init_pos + idx.start() - 1 - idx_cumm
+                    PTM_map[ptm_pos][instance][seq[3]] += 1
+                    idx_cumm += len(instance) + 2
+            
+            # Count 
+            for i in range(int(seq[2]), int(seq[2]) + len(AAnonPTM)):
+                vaccSample[i][AAnonPTM[i-init_pos]][seq[3]] += 1
+
                 
     return PTM_map, vaccSample
 
-def map2HTML(PTM_map, refProt, vaccSample, options):
+def statisticalTest(options, PTM_map, vaccSample, refProt):
+
+    # Initialize 
+    PTM_stats = defaultdict(lambda: defaultdict(lambda : defaultdict(int)))
+
+    # For each position
+    for pos in range(options['pos_range'][0], options['pos_range'][1]+1):
+
+        # IF there is a ptm for both vaccines
+        if len(list(PTM_map[pos].keys())) >=1:
+            for ptm in list(PTM_map[pos].keys()):
+                if PTM_map[pos][ptm]['PAN'] and PTM_map[pos][ptm]['ARP']:
+
+                    # Create array 
+                    ptm_positive = [PTM_map[pos][ptm]['ARP'], PTM_map[pos][ptm]['PAN']]
+                    ptm_negative = [vaccSample[pos][refProt[pos]]['ARP'] - PTM_map[pos][ptm]['ARP'], \
+                         vaccSample[pos][refProt[pos]]['PAN'] - PTM_map[pos][ptm]['PAN']]
+                    
+                    # Fisher test and append to output
+                    oddsratio, pvalue = stats.fisher_exact([ptm_positive, ptm_negative])
+                    PTM_stats[pos][ptm]['pvalue'] =  pvalue
+                    PTM_stats[pos][ptm]['oddsratio'] = oddsratio
+
+
+    return PTM_stats
+
+def map2HTML(PTM_map, refProt, vaccSample, options, PTM_stats):
 
     # For each position, PTM, and vaccine 
     PTM_HTML = list()
     markdowner = Markdown()
     for pos in range(options['pos_range'][0], options['pos_range'][1]+1):
         if len(list(PTM_map[pos].keys())) >= 1:
-            PTM_mark = str(refProt[pos]) + ': ' 
+            PTM_mark = str(refProt[pos]) + ': (ARP: {0}, PAN:{1}) // '.format(vaccSample[pos][refProt[pos]]['ARP'], vaccSample[pos][refProt[pos]]['PAN']) 
             for ptm in list(PTM_map[pos].keys()):
-                PTM_mark = PTM_mark + '__' + str(ptm) + '__' + '(ARP:{:.2%}' ' PAN:{:.2%}\) &nbsp;'.format(PTM_map[pos][ptm]['ARP']/vaccSample[str(pos)][refProt[pos]]['ARP'], PTM_map[pos][ptm]['PAN']/vaccSample[str(pos)][refProt[pos]]['PAN'])
+
+                if not PTM_stats[pos][ptm]:
+                    PTM_mark = PTM_mark + '__' + str(ptm) + '__' + \
+                        '(ARP:{:.2%}' ' PAN:{:.2%}\) &nbsp;'.format(PTM_map[pos][ptm]['ARP']/vaccSample[pos][refProt[pos]]['ARP'],\
+                            PTM_map[pos][ptm]['PAN']/vaccSample[pos][refProt[pos]]['PAN'])
+                elif PTM_stats[pos][ptm]['pvalue'] > 0.05:
+                    PTM_mark = PTM_mark + '__' + str(ptm) + '__' + \
+                        '(ARP:{:.2%}' ' PAN:{:.2%}\, p = {:.2}) &nbsp;'.format(PTM_map[pos][ptm]['ARP']/vaccSample[pos][refProt[pos]]['ARP'],\
+                            PTM_map[pos][ptm]['PAN']/vaccSample[pos][refProt[pos]]['PAN'], PTM_stats[pos][ptm]['pvalue']) 
+                else:
+                    PTM_mark = PTM_mark + '__' + str(ptm) + '__' + \
+                        '(ARP:{:.2%}' ' PAN:{:.2%}\,  <span style=\"color: red;\"> p = {:.2}</span>) &nbsp;'.format(PTM_map[pos][ptm]['ARP']/vaccSample[pos][refProt[pos]]['ARP'],\
+                            PTM_map[pos][ptm]['PAN']/vaccSample[pos][refProt[pos]]['PAN'], PTM_stats[pos][ptm]['pvalue']) 
             PTM_mark = PTM_mark + ' \n'
             PTM_HTML.append(markdowner.convert(PTM_mark))
         else:
@@ -110,9 +152,12 @@ def main():
 
     # Map PTMs 
     PTM_map, vaccSample = map_PTMs(options, data, refProt)
+
+    # Statistical test 
+    PTM_stats = statisticalTest(options, PTM_map, vaccSample, refProt)
     
     # Convert to HTML and store
-    map2HTML(PTM_map, refProt, vaccSample, options)
+    map2HTML(PTM_map, refProt, vaccSample, options, PTM_stats)
 
 
 if __name__ == "__main__":
