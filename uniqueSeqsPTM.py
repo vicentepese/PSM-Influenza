@@ -9,6 +9,7 @@ from markdown2 import Markdown
 from Bio import Entrez
 from Bio import SeqIO
 from collections import defaultdict, OrderedDict
+from scipy import stats
 
 def importData(options):
 
@@ -39,14 +40,56 @@ def getRandomColor(options, PTM_count):
 	# Create color dictionnary	
 	r = lambda: random.randint(75,200)
 	color = {PTM: ['<span style=\"background: '+'#%02X%02X%02X; font-weight: bold' % (r(),r(),r()) + '\">',"</span>"] for PTM in list(PTM_count.keys())}
-	color['mutation'] = ['<span style=\"border-style: solid;  border-width: 2px\">','</span>']
-	color['mutmatch'] = ['; border-style: solid; border-width: 2px']
 	color['red'] = ['<span style=\"background: red; font-weight: bold; \">', '</span>']
+	color['orange'] = ['<span style=\"background: orange; font-weight: bold; \">', '</span>']
 
 	return color
 
 def div0(n, d):
 	return n / d if d and n else 0
+
+def countPositions(data):
+
+	# Position count 
+	posCount = defaultdict(lambda: defaultdict(int))
+
+	# Count number of occurences of an AA for each position 
+	for seq in data:
+		
+		# Clear data and count AA 
+		AAseq = re.sub('\[.+?\]','', seq[1][2:-2])
+		for i in range(0,len(AAseq)):
+			posCount[int(seq[2])+i][AAseq[i]] += 1 
+
+	return posCount
+
+def statisticalTest(options, PTM_seq, seqCount, seq):
+
+	# Initialize 
+	PTM_stats = defaultdict(lambda: defaultdict(lambda : defaultdict(int)))
+	sig_pval = list()
+	# For each ptm
+	for pos in list(PTM_seq.keys()):
+		for ptm in list(PTM_seq[pos].keys()):
+			if PTM_seq[pos][ptm]['PAN'] and PTM_seq[pos][ptm]['ARP']:
+
+				# Create array
+				ptm_positive = [PTM_seq[pos][ptm]['ARP'], PTM_seq[pos][ptm]['ARP']]
+				ptm_negative = [seqCount[seq]['ARP'] - PTM_seq[pos][ptm]['ARP'], \
+					seqCount[seq]['PAN'] - PTM_seq[pos][ptm]['PAN']]
+				
+				# Fisher test, append to output 
+				oddsratio, pvalue = stats.fisher_exact([ptm_positive, ptm_negative])
+				PTM_stats[pos][ptm]['pvalue'] = pvalue
+				PTM_stats[pos][ptm]['oddsratio'] = oddsratio
+
+				# Append significant pvalue 
+				if pvalue < 0.05:
+					sig_pval.append(pos)
+
+
+	return PTM_stats, sig_pval
+
 
 def mapSeqPTM(data, refprot, options):
 
@@ -59,8 +102,6 @@ def mapSeqPTM(data, refprot, options):
 	# For each sequence get sequence of AA (without PTM), initial and ending position
 	for seq in data:
 		AAseq = re.sub('\[.+?\]','',seq[1])[2:-2]
-		if 'AFAMERNAGSGF' in AAseq:
-			print('stop')
 		init_pos = int(seq[2])
 		end_pos = init_pos + len(AAseq)
 
@@ -83,7 +124,7 @@ def mapSeqPTM(data, refprot, options):
 
 	return seqPTM, seqCount, seqInit, PTM_count
 
-def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt):
+def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, data):
 
 	# Initialize 
 	init_pos = min(seqInit[seq] for seq in list(seqInit.keys()))
@@ -96,26 +137,46 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt):
 	# For each sequence
 	for seq in list(seqPTM.keys()):
 
+		if 'GAINTSLPFQNIHPITIGK' in seq:
+			print('stop')
+
+		# Initialize
 		seqMark = seq
 		PTM_pos_loop = list(seqPTM[seq].keys())
 		PTM_pos_loop.sort()
+		seqPos = list(seqPTM[seq].keys())
+		seqPos.sort()
+
+		# Compute Fisher extact test for each PTM between vaccines
+		PTM_stats, sig_pval = statisticalTest(options, seqPTM[seq], seqCount, seq)
+
+		# Create markdown string (highlight PTMs in the sequence)
 		for i in range(0,len(PTM_pos_loop)):
-			seqMark = seqMark[0:PTM_pos_loop[i]] + color['red'][0] + seqMark[PTM_pos_loop[i]] + \
-				 color['red'][1] + seqMark[(PTM_pos_loop[i]+1):]
-			PTM_pos_loop = [pos + len(color['red'][0]) + len(color['red'][1]) for pos in PTM_pos_loop]
+			if seqPos[i] in sig_pval:
+				seqMark = seqMark[0:PTM_pos_loop[i]] + color['red'][0] + seqMark[PTM_pos_loop[i]] + \
+					color['red'][1] + seqMark[(PTM_pos_loop[i]+1):]
+				PTM_pos_loop = [pos + len(color['red'][0]) + len(color['red'][1]) for pos in PTM_pos_loop]
+			else:
+				seqMark = seqMark[0:PTM_pos_loop[i]] + color['orange'][0] + seqMark[PTM_pos_loop[i]] + \
+					color['orange'][1] + seqMark[(PTM_pos_loop[i]+1):]
+				PTM_pos_loop = [pos + len(color['orange'][0]) + len(color['orange'][1]) for pos in PTM_pos_loop]
 
 		# Append initial location and ARP and PAN proportion 
 		seq_init_pos = seqInit[seq]
 		seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos)) + seqMark + \
-			'(ARP: {0}, PAN: {1}'.format(seqCount[seq]['ARP'], seqCount[seq]['PAN']) + ')' 
-		seqPos = list(seqPTM[seq].keys())
-		seqPos.sort()
+			'(ARP: {0}, PAN: {1}'.format(seqCount[seq]['ARP'], seqCount[seq]['PAN']) + ')'
+
 		for pos in seqPos:
 			seqMark = seqMark +  ' // ' + '__' + str(pos) + '__: '
 			for ptm in list(seqPTM[seq][pos].keys()):
-				 seqMark = seqMark + color[ptm][0] + ptm + color[ptm][1] + \
-					  ' \(ARP:{:.2%}' ' PAN:{:.2%}\) '.format(div0(seqPTM[seq][pos][ptm]['ARP'],seqCount[seq]['ARP']),\
-						   div0(seqPTM[seq][pos][ptm]['PAN'],seqCount[seq]['PAN']))
+				if PTM_stats[pos][ptm]:
+					seqMark = seqMark + color[ptm][0] + ptm + color[ptm][1] + \
+						' \(ARP:{:.2%}' ' PAN:{:.2%}, p = {:.2}\) '.format(div0(seqPTM[seq][pos][ptm]['ARP'],seqCount[seq]['ARP']),\
+							div0(seqPTM[seq][pos][ptm]['PAN'],seqCount[seq]['PAN']), PTM_stats[pos][ptm]['pvalue'])
+				else:
+					seqMark = seqMark + color[ptm][0] + ptm + color[ptm][1] + \
+						' \(ARP:{:.2%}' ' PAN:{:.2%}\) '.format(div0(seqPTM[seq][pos][ptm]['ARP'],seqCount[seq]['ARP']),\
+							div0(seqPTM[seq][pos][ptm]['PAN'],seqCount[seq]['PAN']))
 
 		seqHTML[seq] = Markdowner.convert(seqMark + '\n')
 	
@@ -161,8 +222,11 @@ def main():
 	# Count PTMs for each unique sequence
 	seqPTM, seqCount, seqInit, PTM_count = mapSeqPTM(data, refProt, options)
 
+	# Count positions 
+	posCount = countPositions(data)
+
 	# Compute HTML document 
-	seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt)
+	seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, data)
 
 if __name__ == "__main__":
 	main()
