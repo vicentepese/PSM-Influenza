@@ -5,6 +5,7 @@ import json
 import csv 
 import re
 import random 
+import subprocess
 from markdown2 import Markdown
 from Bio import Entrez
 from Bio import SeqIO
@@ -68,6 +69,7 @@ def statisticalTest(options, PTM_seq, seqCount, seq):
 	# Initialize 
 	PTM_stats = defaultdict(lambda: defaultdict(lambda : defaultdict(int)))
 	sig_pval = list()
+
 	# For each ptm
 	for pos in list(PTM_seq.keys()):
 		for ptm in list(PTM_seq[pos].keys()):
@@ -101,6 +103,7 @@ def mapSeqPTM(data, refprot, options):
 
 	# For each sequence get sequence of AA (without PTM), initial and ending position
 	for seq in data:
+
 		AAseq = re.sub('\[.+?\]','',seq[1])[2:-2]
 		init_pos = int(seq[2])
 		end_pos = init_pos + len(AAseq)
@@ -123,6 +126,55 @@ def mapSeqPTM(data, refprot, options):
 					idx_cumm += len(instance) + 2
 
 	return seqPTM, seqCount, seqInit, PTM_count
+
+def netMHCIIpan(options, AAseq):
+	
+	# Retrieve allele and run netMHCIIpan
+	allele = options['netMHCIIpan-3.2']['allele']
+	subprocess.run(['bash', './run_netMHCIIpan.sh', allele])
+
+	# Open file 
+	with open(options['files']['tmpOut.out'],'r') as inFile:
+		output = list()
+		for row in inFile:
+			output.append(row)
+	output = output[13].split()
+	affinity = output[8]
+	bindingLevel = output[-1][2:]
+	bindingCore = output[5]
+
+	return affinity, bindingLevel, bindingCore
+
+def getBindingCore(options, data):
+
+	bindingSeq = defaultdict(lambda: defaultdict(str))
+
+	# For each sequence, find binding core and get Affinity
+	for seq in data:
+
+		AAseq = re.sub('\[.+?\]','',seq[1])[2:-2]
+		init_pos = int(seq[2])
+		end_pos = init_pos + len(AAseq)
+
+		# If sequence overlaps with range and AAseq is longer than 15 AA
+		if not(end_pos < options['pos_range'][0]) and not(init_pos > options['pos_range'][1]) and len(AAseq) >= 15:
+			print("Predicting biding core for " + AAseq + " with allele " + options['netMHCIIpan-3.2']['allele'])
+
+			# Create temporal fasta file 
+			with open(options['files']['tmpSeq.fasta'],'w') as outFile:
+				outFile.write('>seq1\n')
+				outFile.write(AAseq)
+			
+			# Run netMHCIIpan with sequence 
+			affinity, bindingLevel, bindingCore = netMHCIIpan(options, AAseq)
+			print("Binding core prediction task successfully completed")
+
+			# Append to dictionnary 
+			bindingSeq[seq]['affinity'] = affinity
+			bindingSeq[seq]['bindingLevel'] = bindingLevel
+			bindingSeq[seq]['bindingCore'] = bindingCore
+	
+	return bindingSeq
 
 def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, data):
 
@@ -221,6 +273,9 @@ def main():
 
 	# Count PTMs for each unique sequence
 	seqPTM, seqCount, seqInit, PTM_count = mapSeqPTM(data, refProt, options)
+
+	# Find binding core
+	bindingSeq = getBindingCore(options, data)
 
 	# Count positions 
 	posCount = countPositions(data)

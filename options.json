@@ -3,7 +3,8 @@
         "Data":"Data/",
         "Outputs":"Outputs/",
         "DataMASS":"DataMASS/",
-        "FiltDataMASS":"FiltDataMASS/"
+        "FiltDataMASS":"FiltDataMASS/",
+        "home":"/home/vicente/Documents/PSM-Influenza/"
     },
 
     "files":{
@@ -16,7 +17,9 @@
         "seqMap.html":"Outputs/seqMap.html",
         "seqMapOrex.html":"Outputs/seqMapOrex.html",
         "mapPTM.html":"Outputs/mapPTM.html",
-        "uniqueSeqsPTM.html":"Outputs/uniqueSeqsPTM.html"
+        "uniqueSeqsPTM.html":"Outputs/uniqueSeqsPTM.html",
+        "tmpSeq.fasta": "netMHCIIpan-3.2/tmp/tmpSeq.fasta",
+        "tmpOut.out":"netMHCIIpan-3.2/tmp/tmpOut.out"
     },
 
     "filterData":"HA-",
@@ -31,5 +34,10 @@
 
     "html":{
         "scroll-template":"utils/scrolling_template.html"
+    },
+
+    "netMHCIIpan-3.2":{
+        "allele":"HLA-DQA10102-DQB10602"
     }
+    
 }
