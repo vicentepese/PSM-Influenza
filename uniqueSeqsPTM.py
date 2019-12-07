@@ -36,6 +36,26 @@ def reference_retreive(proteinID):
 		out_ref[i+1] =j
 	return out_ref
 
+def importBindData(options):
+
+	# Import binders 
+	binders = defaultdict(int)
+	with open(options['files']['DQ0602Binders'],'r') as inFile:
+		next(inFile)
+		reader = csv.reader(inFile)
+		for row in reader:
+			binders[row[2]] = float(row[3])
+	
+	# Import binding cores 
+	bindingCores = defaultdict(str)
+	with open(options['files']['DQ0602BindingCores'], 'r') as inFile:
+		next(inFile)
+		reader = csv.reader(inFile, delimiter = '\t')
+		for row in reader:
+			bindingCores[row[4]] = row[6]
+
+	return binders, bindingCores
+
 def getRandomColor(options, PTM_count):
 
 	# Create color dictionnary	
@@ -93,6 +113,33 @@ def statisticalTest(options, PTM_seq, seqCount, seq):
 
 	return PTM_stats, sig_pval
 
+def getBindingCore(options, refProt):
+
+	# Import groundtruth and binding core 
+	binders, bindingCores = importBindData(options)
+
+	# Create array protein reference
+	refProtStr = ''.join([refProt[AA] for AA in list(refProt.keys())])
+
+	# Take binders with less than 10% of affinity, find the binding core,
+	# and find indexes in protein of reference 
+	strongBinders = list()
+	coreIdxs = list()
+	for binder in binders:
+		if float(binders[binder]) <= 10 and binder in refProtStr:
+			strongBinders.append(binder)
+			core = bindingCores[binder]
+			idx = re.search(core, refProtStr)
+			coreIdxs.append(idx.span())
+	
+	return coreIdxs
+
+def checkOverlap(seq_init_pos, seq_end_pos, coreIdxs):
+	for core in coreIdxs:
+		if seq_init_pos <= core[0] and seq_end_pos >= core[1]:
+			return True, core
+
+	return False, None
 
 def mapSeqPTM(data, refprot, options):
 
@@ -128,7 +175,7 @@ def mapSeqPTM(data, refprot, options):
 
 	return seqPTM, seqCount, seqInit, PTM_count
 
-def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, data):
+def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
 
 	# Initialize 
 	init_pos = min(seqInit[seq] for seq in list(seqInit.keys()))
@@ -147,9 +194,19 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, data):
 		PTM_pos_loop.sort()
 		seqPos = list(seqPTM[seq].keys())
 		seqPos.sort()
+		seq_init_pos = seqInit[seq]
+		seq_end_pos = seq_init_pos + len(seq)
 
 		# Compute Fisher extact test for each PTM between vaccines
 		PTM_stats, sig_pval = statisticalTest(options, seqPTM[seq], seqCount, seq)
+
+		# Highlight binding cores:
+		check, core = checkOverlap(seq_init_pos, seq_end_pos, coreIdxs)
+		# TODO: Continue from here
+		if check:
+			core = [idx + 1 - seq_init_pos for idx in core]
+			seqMark = seqMark[0:PTM_pos_loop[i]] + color['red'][0] + seqMark[PTM_pos_loop[i]] + \
+					color['red'][1] + seqMark[(PTM_pos_loop[i]+1):]
 
 		# Create markdown string (highlight PTMs in the sequence)
 		for i in range(0,len(PTM_pos_loop)):
@@ -163,7 +220,6 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, data):
 				PTM_pos_loop = [pos + len(color['orange'][0]) + len(color['orange'][1]) for pos in PTM_pos_loop]
 
 		# Append initial location and ARP and PAN proportion 
-		seq_init_pos = seqInit[seq]
 		seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos)) + seqMark + \
 			'(ARP: {0}, PAN: {1}'.format(seqCount[seq]['ARP'], seqCount[seq]['PAN']) + ')'
 
@@ -224,8 +280,11 @@ def main():
 	# Count positions 
 	posCount = countPositions(data)
 
+	# Get binding core and binding core positions
+	coreIdxs = getBindingCore(options, refProt)
+
 	# Compute HTML document 
-	seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, data)
+	seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs)
 
 if __name__ == "__main__":
 	main()

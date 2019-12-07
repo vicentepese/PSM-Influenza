@@ -19,7 +19,9 @@
         "mapPTM.html":"Outputs/mapPTM.html",
         "uniqueSeqsPTM.html":"Outputs/uniqueSeqsPTM.html",
         "tmpSeq.fasta": "netMHCIIpan-3.2/tmp/tmpSeq.fasta",
-        "tmpOut.out":"netMHCIIpan-3.2/tmp/tmpOut.out"
+        "tmpOut.out":"netMHCIIpan-3.2/tmp/tmpOut.out",
+        "DQ0602Binders":"Data/DQ0602Binders.csv",
+        "DQ0602BindingCores":"Data/DQ0602BindingCores.csv"
     },
 
     "filterData":"HA-",
