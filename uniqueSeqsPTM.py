@@ -136,7 +136,7 @@ def getBindingCore(options, refProt):
 
 def checkOverlap(seq_init_pos, seq_end_pos, coreIdxs):
 	for core in coreIdxs:
-		if seq_init_pos <= core[0] and seq_end_pos >= core[1]:
+		if seq_init_pos <= core[0] and seq_end_pos > core[1]:
 			return True, core
 
 	return False, None
@@ -188,6 +188,9 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
 	# For each sequence
 	for seq in list(seqPTM.keys()):
 
+		if 'MKAILVVLLNTF' == seq:
+			print('stop')
+
 		# Initialize
 		seqMark = seq
 		PTM_pos_loop = list(seqPTM[seq].keys())
@@ -202,11 +205,17 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
 
 		# Highlight binding cores:
 		check, core = checkOverlap(seq_init_pos, seq_end_pos, coreIdxs)
-		# TODO: Continue from here
 		if check:
 			core = [idx + 1 - seq_init_pos for idx in core]
-			seqMark = seqMark[0:PTM_pos_loop[i]] + color['red'][0] + seqMark[PTM_pos_loop[i]] + \
-					color['red'][1] + seqMark[(PTM_pos_loop[i]+1):]
+			seqMark = seqMark[0:core[0]] + color['bindingCore'][0] + seqMark[core[0]:core[1]] + \
+					color['bindingCore'][1] + seqMark[core[1]:]
+			for i in range(len(PTM_pos_loop)):
+				if PTM_pos_loop[i] >= core[0] and PTM_pos_loop[i] <= core[1]:
+					PTM_pos_loop[i] = PTM_pos_loop[i] + len(color['bindingCore'][0])
+				elif PTM_pos_loop[i] < core[0]:
+					continue
+				else:
+					PTM_pos_loop[i] = PTM_pos_loop[i] + len(color['bindingCore'][0]) + len(color['bindingCore'][1])
 
 		# Create markdown string (highlight PTMs in the sequence)
 		for i in range(0,len(PTM_pos_loop)):
@@ -219,9 +228,14 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
 					color['orange'][1] + seqMark[(PTM_pos_loop[i]+1):]
 				PTM_pos_loop = [pos + len(color['orange'][0]) + len(color['orange'][1]) for pos in PTM_pos_loop]
 
+		# TODO: optimize this if-else statement
 		# Append initial location and ARP and PAN proportion 
-		seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos)) + seqMark + \
-			'(ARP: {0}, PAN: {1}'.format(seqCount[seq]['ARP'], seqCount[seq]['PAN']) + ')'
+		if options['pos_range'][0] > 1:
+			seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos)) + seqMark + \
+				'(ARP: {0}, PAN: {1}'.format(seqCount[seq]['ARP'], seqCount[seq]['PAN']) + ')'
+		else:
+			seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos) - len(str(seq_init_pos)) - 1) + str(seq_init_pos) + '.' + seqMark + \
+				'(ARP: {0}, PAN: {1}'.format(seqCount[seq]['ARP'], seqCount[seq]['PAN']) + ')'
 
 		for pos in seqPos:
 			seqMark = seqMark +  ' // ' + '__' + str(pos) + '__: '

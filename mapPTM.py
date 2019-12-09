@@ -34,6 +34,9 @@ def reference_retreive(proteinID):
 		out_ref[i+1] =j
 	return out_ref
 
+def div0(n, d):
+	return n / d if d and n else 0
+
 def map_PTMs(options, data, refProt):
 
     # Initialize 
@@ -113,16 +116,16 @@ def map2HTML(PTM_map, refProt, vaccSample, options, PTM_stats):
 
                 if not PTM_stats[pos][ptm]:
                     PTM_mark = PTM_mark + '__' + str(ptm) + '__' + \
-                        '(ARP:{:.2%}' ' PAN:{:.2%}\) &nbsp;'.format(PTM_map[pos][ptm]['ARP']/vaccSample[pos][refProt[pos]]['ARP'],\
-                            PTM_map[pos][ptm]['PAN']/vaccSample[pos][refProt[pos]]['PAN'])
+                        '(ARP:{:.2%}' ' PAN:{:.2%}) &nbsp;'.format(div0(PTM_map[pos][ptm]['ARP'],vaccSample[pos][refProt[pos]]['ARP']),\
+                            div0(PTM_map[pos][ptm]['PAN'],vaccSample[pos][refProt[pos]]['PAN']))
                 elif PTM_stats[pos][ptm]['pvalue'] > 0.05:
                     PTM_mark = PTM_mark + '__' + str(ptm) + '__' + \
-                        '(ARP:{:.2%}' ' PAN:{:.2%}\, p = {:.2}) &nbsp;'.format(PTM_map[pos][ptm]['ARP']/vaccSample[pos][refProt[pos]]['ARP'],\
-                            PTM_map[pos][ptm]['PAN']/vaccSample[pos][refProt[pos]]['PAN'], PTM_stats[pos][ptm]['pvalue']) 
+                        '(ARP:{:.2%}' ' PAN:{:.2%}, p = {:.2}) &nbsp;'.format(div0(PTM_map[pos][ptm]['ARP'],vaccSample[pos][refProt[pos]]['ARP']),\
+                            div0(PTM_map[pos][ptm]['PAN'],vaccSample[pos][refProt[pos]]['PAN']), PTM_stats[pos][ptm]['pvalue']) 
                 else:
                     PTM_mark = PTM_mark + '__' + str(ptm) + '__' + \
-                        '(ARP:{:.2%}' ' PAN:{:.2%}\,  <span style=\"color: red;\"> p = {:.2}</span>) &nbsp;'.format(PTM_map[pos][ptm]['ARP']/vaccSample[pos][refProt[pos]]['ARP'],\
-                            PTM_map[pos][ptm]['PAN']/vaccSample[pos][refProt[pos]]['PAN'], PTM_stats[pos][ptm]['pvalue']) 
+                        '(ARP:{:.2%}' ' PAN:{:.2%},  <span style=\"color: red;\"> p = {:.2}</span>) &nbsp;'.format(div0(PTM_map[pos][ptm]['ARP'],vaccSample[pos][refProt[pos]]['ARP']),\
+                            div0(PTM_map[pos][ptm]['PAN'],vaccSample[pos][refProt[pos]]['PAN']), PTM_stats[pos][ptm]['pvalue']) 
             PTM_mark = PTM_mark + ' \n'
             PTM_HTML.append(markdowner.convert(PTM_mark))
         else:
