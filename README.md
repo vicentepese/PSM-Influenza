@@ -33,11 +33,6 @@ The output is a _.html_ file that allows to visualize where PTMs are mostly taki
 
 ### uniqueSeqsPTM.py
 
-The script starts retrieving the protein of reference and loading the data. Then, PTMS are counted for each sequence, position and type. 
+The script starts retrieving the protein of reference and loading the data. Then, PTMS are counted for each sequence, position and type. Fisher's exact test is performed to study the correlation of PTMs-type occurrence and vaccine (based on type and positions) in __that specific sequence__. Significant correlations are highlighted in red, whereas non-significant are highlighted in orange. 
 
-The output is a _.html_ file that highlights in  <span color='red'>red</span> the location of the PTMS, and for such locations includes the type of location found in each position, and the frequency of sequences that presented such PTM (for that sequence).
-
-### chiSquarePos.py
-
-__*Under construction*__
-
+The binding cores of the protein of reference were studied, and their positions (if entirely found in a fragment) are highlighted in green. Only strong binders (<10% rank) were considered for binding score prediction and map.  
