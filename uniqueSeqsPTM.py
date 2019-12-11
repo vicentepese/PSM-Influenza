@@ -135,8 +135,9 @@ def getBindingCore(options, refProt):
 	return coreIdxs
 
 def checkOverlap(seq_init_pos, seq_end_pos, coreIdxs):
+	# If there is a partial overlap of at least one AA
 	for core in coreIdxs:
-		if seq_init_pos <= core[0] and seq_end_pos > core[1]:
+		if seq_init_pos in range(core[0], core[1]+1) or seq_end_pos in range(core[0], core[1]+1):
 			return True, core
 
 	return False, None
@@ -153,6 +154,9 @@ def mapSeqPTM(data, refprot, options):
 	for seq in data:
 
 		AAseq = re.sub('\[.+?\]','',seq[1])[2:-2]
+		if 'VFVWSSRY' == AAseq:
+			print('stop')
+
 		init_pos = int(seq[2])
 		end_pos = init_pos + len(AAseq)
 
@@ -188,7 +192,7 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
 	# For each sequence
 	for seq in list(seqPTM.keys()):
 
-		if 'MKAILVVLLNTF' == seq:
+		if 'VFVWSSRY' == seq:
 			print('stop')
 
 		# Initialize
@@ -207,15 +211,16 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
 		check, core = checkOverlap(seq_init_pos, seq_end_pos, coreIdxs)
 		if check:
 			core = [idx + 1 - seq_init_pos for idx in core]
+			core = [0 if pos < 0 else pos for pos in core]
 			seqMark = seqMark[0:core[0]] + color['bindingCore'][0] + seqMark[core[0]:core[1]] + \
 					color['bindingCore'][1] + seqMark[core[1]:]
 			for i in range(len(PTM_pos_loop)):
-				if PTM_pos_loop[i] >= core[0] and PTM_pos_loop[i] <= core[1]:
+				if PTM_pos_loop[i] in range(core[0], core[1]):
 					PTM_pos_loop[i] = PTM_pos_loop[i] + len(color['bindingCore'][0])
 				elif PTM_pos_loop[i] < core[0]:
 					continue
 				else:
-					PTM_pos_loop[i] = PTM_pos_loop[i] + len(color['bindingCore'][0]) + len(color['bindingCore'][1])
+					PTM_pos_loop[i] =PTM_pos_loop[i] = PTM_pos_loop[i] + len(color['bindingCore'][0]) + len(color['bindingCore'][1])
 
 		# Create markdown string (highlight PTMs in the sequence)
 		for i in range(0,len(PTM_pos_loop)):
