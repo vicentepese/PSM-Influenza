@@ -154,9 +154,6 @@ def mapSeqPTM(data, refprot, options):
 	for seq in data:
 
 		AAseq = re.sub('\[.+?\]','',seq[1])[2:-2]
-		if 'VFVWSSRY' == AAseq:
-			print('stop')
-
 		init_pos = int(seq[2])
 		end_pos = init_pos + len(AAseq)
 
@@ -191,9 +188,6 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
 
 	# For each sequence
 	for seq in list(seqPTM.keys()):
-
-		if 'VFVWSSRY' == seq:
-			print('stop')
 
 		# Initialize
 		seqMark = seq
@@ -295,9 +289,6 @@ def main():
 
 	# Count PTMs for each unique sequence
 	seqPTM, seqCount, seqInit, PTM_count = mapSeqPTM(data, refProt, options)
-
-	# Count positions 
-	posCount = countPositions(data)
 
 	# Get binding core and binding core positions
 	coreIdxs = getBindingCore(options, refProt)

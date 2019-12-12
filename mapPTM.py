@@ -58,15 +58,12 @@ def map_PTMs(options, data, refProt):
         if not(end_pos < options['pos_range'][0]) and not(init_pos > options['pos_range'][1]):
 
             if '[' in seq[1]:
-
                 PTM_idx = re.finditer('\[(.*?)\]', AAseq, re.DOTALL)
                 PTM_instances = re.findall('\[(.*?)\]', AAseq, re.DOTALL)
 
-                # For each PTM
+                # For each PTM, find position and append according to type 
                 idx_cumm = 0
                 for instance, idx in zip(PTM_instances, PTM_idx):
-
-                    # Find position 
                     ptm_pos = init_pos + idx.start() - 1 - idx_cumm
                     PTM_map[ptm_pos][instance][seq[3]] += 1
                     idx_cumm += len(instance) + 2

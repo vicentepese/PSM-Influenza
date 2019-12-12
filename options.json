@@ -26,7 +26,7 @@
 
     "filterData":"HA-",
     "filterDataBash":"./filterData.sh",
-    "pos_range": [1,566],
+    "pos_range": [141,150],
     "refProt":"ADE29085.1",
     
     "MarkdownHigh":{
