@@ -137,8 +137,8 @@ def getBindingCore(options, refProt):
 def checkOverlap(seq_init_pos, seq_end_pos, coreIdxs):
 	# If there is a partial overlap of at least one AA
 	for core in coreIdxs:
-		if seq_init_pos in range(core[0], core[1]+1) or seq_end_pos in range(core[0], core[1]+1):
-			return True, core
+		if any([idx in range(seq_init_pos, seq_end_pos) for idx in core]):
+					return True, core
 
 	return False, None
 
@@ -197,6 +197,9 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
 		seqPos.sort()
 		seq_init_pos = seqInit[seq]
 		seq_end_pos = seq_init_pos + len(seq)
+
+		if seq_init_pos == 40:
+			print('stop')
 
 		# Compute Fisher extact test for each PTM between vaccines
 		PTM_stats, sig_pval = statisticalTest(options, seqPTM[seq], seqCount, seq)
