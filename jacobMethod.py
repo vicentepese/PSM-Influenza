@@ -68,10 +68,10 @@ def getRandomColor(options, PTM_count):
 	color = {PTM: ['<span style=\"background: '+'#%02X%02X%02X; font-weight: bold' %
 		(r(), r(), r()) + '\">', "</span>"] for PTM in list(PTM_count.keys())}
 	color['ARP'] = ['<span style=\"color: #800000; font-weight: bold; \">', '</span>']
-	color['PAN'] = [
-		'<span style=\"color: #038f0a; font-weight: bold; \">', '</span>']
-	color['bindingCore'] = [
-		'<span style=\"background: green; font-weight: bold; \">', '</span>']
+	color['PAN'] = ['<span style=\"color: #000782; font-weight: bold; \">', '</span>']
+	color['strongBinder'] = ['<span style=\"background: green; font-weight: bold; \">', '</span>']
+	color['weakBinder'] = ['<span style=\"background: orange; font-weight: bold; \">', '</span>']
+	color['red'] = ['<span style=\"color: red; font-weight: bold; \">', '</span>']
 
 	return color
 
@@ -130,18 +130,31 @@ def getBindingCore(options, refProt):
 	# Create array protein reference
 	refProtStr = ''.join([refProt[AA] for AA in list(refProt.keys())])
 
+	#TODO: Recheck this part 
 	# Take binders with less than 10% of affinity, find the binding core,
 	# and find indexes in protein of reference
-	strongBinders = list()
 	coreIdxs = list()
+	coreClass = list()
 	for binder in binders:
-		if float(binders[binder]) <= 10 and binder in refProtStr:
-			strongBinders.append(binder)
+		if float(binders[binder]) <= 20 and binder in refProtStr:
 			core = bindingCores[binder]
-			idx = re.search(core, refProtStr)
-			coreIdxs.append(idx.span())
+			idx_binder = re.search(binder, refProtStr).span()
+			idx_core = re.search(core, binder).span()
+			idx =  [idx + idx_binder[0] for idx in idx_core]
+			coreIdxs.append(idx)
+			coreClass.append('strong')
+		elif float(binders[binder]) <= 50 and binder in refProtStr:
+			core = bindingCores[binder]
+			idx_binder = re.search(binder, refProtStr).span()
+			idx_core = re.search(core, binder).span()
+			idx = [idx + idx_binder[0] for idx in idx_core]
+			# Check for overlap
+			if not any(idx[0] in coreRange for coreRange in coreIdxs) and \
+				not any(idx[1] in coreRange for coreRange in coreIdxs):
+				coreIdxs.append(idx)
+				coreClass.append('weak')	
 
-	return coreIdxs
+	return coreIdxs, coreClass
 
 
 def mapPTM(data, refProt, options):
@@ -191,7 +204,7 @@ def mapPTM(data, refProt, options):
 	return seqPTM, vaccSample, PTM_count
 
 
-def map2HTML(options, coreIdxs, refProt, PTM_stats, seqPTM, vaccSample, PTM_count):
+def map2HTML(options, coreIdxs, coreClass, refProt, PTM_stats, seqPTM, vaccSample, PTM_count):
 
 
 	# Initialize
@@ -203,11 +216,10 @@ def map2HTML(options, coreIdxs, refProt, PTM_stats, seqPTM, vaccSample, PTM_coun
 	i = 0
 	while i < len(refProt):
 
-		# TODO: recheck this part, continue from here 
 		# Create string of reference protein (taking 70 AA)
 		refProtStr = refProt[i:i+70]
 		count = 0 
-		for core in coreIdxs:
+		for core, coreCl in zip(coreIdxs, coreClass):
 
 			# If core is in that fragment of protein hightlight
 			if core[0] in range(i, i + 70):
@@ -215,28 +227,42 @@ def map2HTML(options, coreIdxs, refProt, PTM_stats, seqPTM, vaccSample, PTM_coun
 				if count == 0:
 					# Update core idxes
 					core = [idx -i for idx in core]
-					refProtStr = refProtStr[0:core[0]] + color['bindingCore'][0] + refProtStr[core[0]:core[1]] + \
-						color['bindingCore'][1] + refProtStr[core[1]:]
-					count += 1
+					if coreCl == 'strong':
+						refProtStr = refProtStr[0:core[0]] + color['strongBinder'][0] + refProtStr[core[0]:core[1]] + \
+							color['strongBinder'][1] + refProtStr[core[1]:]
+						count += 1
+					else:
+						refProtStr = refProtStr[0:core[0]] + color['weakBinder'][0] + refProtStr[core[0]:core[1]] + \
+							color['weakBinder'][1] + refProtStr[core[1]:]
+						count += 1
 				# If previous binding core in segment, update idx
 				else:
-					core = [idx - i +len(color['bindingCore'][0]) + len(color['bindingCore'][1]) for idx in core]
-		
-					refProtStr = refProtStr[0:core[0]] + color['bindingCore'][0] + refProtStr[core[0]:core[1]] + \
-						color['bindingCore'][1] + refProtStr[core[1]:]
+					if coreCl == 'strong':
+						core = [idx - i +len(color['strongBinder'][0]) + len(color['strongBinder'][1]) for idx in core]
+						refProtStr = refProtStr[0:core[0]] + color['strongBinder'][0] + refProtStr[core[0]:core[1]] + \
+							color['strongBinder'][1] + refProtStr[core[1]:]
+					else:
+						core = [idx - i +len(color['strongBinder'][0]) + len(color['strongBinder'][1]) for idx in core]
+						refProtStr = refProtStr[0:core[0]] + color['weakBinder'][0] + refProtStr[core[0]:core[1]] + \
+							color['weakBinder'][1] + refProtStr[core[1]:]
 			elif core[1] in range(i, i + 70):
 					# Update core idxes
 					core = [idx -i for idx in core]
 					core = [0 if idx < 0 else idx for idx in core]
-					refProtStr = color['bindingCore'][0] + refProtStr[core[0]:core[1]] + \
-						color['bindingCore'][1] + refProtStr[core[1]:]
-					count += 1
-			
+					if coreCl == 'strong':
+						refProtStr = color['strongBinder'][0] + refProtStr[core[0]:core[1]] + \
+							color['strongBinder'][1] + refProtStr[core[1]:]
+						count += 1
+					else:
+						refProtStr = color['weakBinder'][0] + refProtStr[core[0]:core[1]] + \
+							color['weakBinder'][1] + refProtStr[core[1]:]
+						count += 1
+		
+		# Append
 		refProtStr = str(i+1) + '.' + '&nbsp;'*(6 -len(str(i))-1) + refProtStr + '\n'
 		PTM_HTML.append(markdowner.convert(refProtStr))
 
 		# Create ARP string
-		# TODO: Continue from here
 		ARP_str = color['ARP'][0] + 'ARP:&nbsp;&nbsp;' + color['ARP'][1]
 		ARP_ptm = defaultdict(lambda: defaultdict(int))
 		last_pos = 0
@@ -248,15 +274,6 @@ def map2HTML(options, coreIdxs, refProt, PTM_stats, seqPTM, vaccSample, PTM_coun
 		ARP_str  = ARP_str +  color['ARP'][0] + '&mdash;'*(70 - last_pos) +  color['ARP'][1]
 		PTM_HTML.append(markdowner.convert(ARP_str))
 
-		# Create dictionnary of PTMS for that region of 70 
-		ARP_ptm_str = '&nbsp;'*6
-		while len(ARP_ptm) > 0:
-			for pos in list(ARP_ptm.keys()):
-				for ptm in list(ARP_ptm[pos].keys()):
-					ARP_ptm_str  = ARP_ptm_str +  color[ptm][0] + ptm +  color['ARP'][1] + refProt[pos-1]
-
-
-
 		# Create PAN string
 		PAN_str = color['PAN'][0] + 'PAN:&nbsp;&nbsp;' + color['PAN'][1]
 		last_pos = 0
@@ -267,7 +284,26 @@ def map2HTML(options, coreIdxs, refProt, PTM_stats, seqPTM, vaccSample, PTM_coun
 		PAN_str  = PAN_str +  color['PAN'][0] + '&mdash;'*(70 - last_pos) +  color['PAN'][1]
 		
 		PTM_HTML.append(markdowner.convert(PAN_str))
+
+		# Create strings for each PTM positon and type 
+		for pos in list(ARP_ptm.keys()):
+			for ptm in list(ARP_ptm[pos].keys()):
+				ARP_prop = seqPTM[pos][ptm]['ARP']/vaccSample[pos][refProt[pos-1]]['ARP']
+				ARP_samp = vaccSample[pos][refProt[pos-1]]['ARP']
+				PAN_prop = seqPTM[pos][ptm]['ARP']/vaccSample[pos][refProt[pos-1]]['PAN']
+				PAN_samp = vaccSample[pos][refProt[pos-1]]['PAN']
+				ARP_ptm_str = '&nbsp;'*(pos -i -3+ 6) + \
+						color[ptm][0] + ptm +  color[ptm][1] + \
+							'(ARP:{:.2%}({}), PAN:{:.2%}({}), '.format(ARP_prop, ARP_samp, PAN_prop, PAN_samp )
+				if PTM_stats[pos][ptm]['pvalue'] < 0.05:
+					ARP_ptm_str = ARP_ptm_str + color['red'][0] + 'p={:.2}'.format(PTM_stats[pos][ptm]['pvalue']) + '\n'
+				else:
+					ARP_ptm_str = ARP_ptm_str + 'p={:.2})'.format(PTM_stats[pos][ptm]['pvalue']) + '\n'
+				PTM_HTML.append(markdowner.convert(ARP_ptm_str))
+
+		# Separate 
 		PTM_HTML.append(markdowner.convert('&nbsp;\n'))
+
 		# Update index
 		i += 70
 
@@ -291,7 +327,7 @@ def main():
 	refProt = reference_retreive(options['refProt'])
 
 	# Get binding core and binding core positions
-	coreIdxs = getBindingCore(options, refProt)
+	coreIdxs, coreClass = getBindingCore(options, refProt)
 
 	# Get PTM positions, type and count 
 	seqPTM, vaccSample, PTM_count = mapPTM(data, refProt, options)
@@ -300,7 +336,7 @@ def main():
 	PTM_stats = statisticalTest(options, seqPTM, vaccSample, refProt)
 
 	# Create HTML output
-	map2HTML(options, coreIdxs, refProt, PTM_stats, seqPTM, vaccSample, PTM_count)
+	map2HTML(options, coreIdxs, coreClass, refProt, PTM_stats, seqPTM, vaccSample, PTM_count)
 
 	# Verbose
 	print('stop')
