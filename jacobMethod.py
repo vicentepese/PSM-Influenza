@@ -69,8 +69,8 @@ def getRandomColor(options, PTM_count):
 		(r(), r(), r()) + '\">', "</span>"] for PTM in list(PTM_count.keys())}
 	color['ARP'] = ['<span style=\"color: #800000; font-weight: bold; \">', '</span>']
 	color['PAN'] = ['<span style=\"color: #000782; font-weight: bold; \">', '</span>']
-	color['strongBinder'] = ['<span style=\"background: green; font-weight: bold; \">', '</span>']
-	color['weakBinder'] = ['<span style=\"background: orange; font-weight: bold; \">', '</span>']
+	color['strongBinder'] = ['<span style=\"background: #0F9D58; font-weight: bold; \">', '</span>']
+	color['weakBinder'] = ['<span style=\"background: #F4B400; font-weight: bold; \">', '</span>']
 	color['red'] = ['<span style=\"color: red; font-weight: bold; \">', '</span>']
 
 	return color
@@ -78,22 +78,6 @@ def getRandomColor(options, PTM_count):
 
 def div0(n, d):
 	return n / d if d and n else 0
-
-
-def countPositions(data):
-
-	# Position count
-	posCount = defaultdict(lambda: defaultdict(int))
-
-	# Count number of occurences of an AA for each position
-	for seq in data:
-
-		# Clear data and count AA
-		AAseq = re.sub('\[.+?\]', '', seq[1][2:-2])
-		for i in range(0, len(AAseq)):
-			posCount[int(seq[2])+i][AAseq[i]] += 1
-
-	return posCount
 
 
 def statisticalTest(options, PTM_map, vaccSample, refProt):
@@ -130,7 +114,6 @@ def getBindingCore(options, refProt):
 	# Create array protein reference
 	refProtStr = ''.join([refProt[AA] for AA in list(refProt.keys())])
 
-	#TODO: Recheck this part 
 	# Take binders with less than 10% of affinity, find the binding core,
 	# and find indexes in protein of reference
 	coreIdxs = list()
@@ -149,11 +132,15 @@ def getBindingCore(options, refProt):
 			idx_core = re.search(core, binder).span()
 			idx = [idx + idx_binder[0] for idx in idx_core]
 			# Check for overlap
-			if not any(idx[0] in coreRange for coreRange in coreIdxs) and \
-				not any(idx[1] in coreRange for coreRange in coreIdxs):
+			if not any(idx[0] in range(coreRange[0], coreRange[1]) for coreRange in coreIdxs) and \
+				not any(idx[1] in range(coreRange[0], coreRange[1]) for coreRange in coreIdxs):
 				coreIdxs.append(idx)
-				coreClass.append('weak')	
+				coreClass.append('weak')
 
+	# Sort
+	sortIdx = np.argsort([idx[0] for idx in coreIdxs])
+	coreIdxs = [coreIdxs[idx] for idx in sortIdx]
+	coreClass = [coreClass[idx] for idx in sortIdx]
 	return coreIdxs, coreClass
 
 
@@ -238,13 +225,15 @@ def map2HTML(options, coreIdxs, coreClass, refProt, PTM_stats, seqPTM, vaccSampl
 				# If previous binding core in segment, update idx
 				else:
 					if coreCl == 'strong':
-						core = [idx - i +len(color['strongBinder'][0]) + len(color['strongBinder'][1]) for idx in core]
+						core = [idx - i + count*(len(color['strongBinder'][0]) + len(color['strongBinder'][1])) for idx in core]
 						refProtStr = refProtStr[0:core[0]] + color['strongBinder'][0] + refProtStr[core[0]:core[1]] + \
 							color['strongBinder'][1] + refProtStr[core[1]:]
+						count += 1
 					else:
-						core = [idx - i +len(color['strongBinder'][0]) + len(color['strongBinder'][1]) for idx in core]
+						core = [idx - i + count*(len(color['strongBinder'][0]) + len(color['strongBinder'][1])) for idx in core]
 						refProtStr = refProtStr[0:core[0]] + color['weakBinder'][0] + refProtStr[core[0]:core[1]] + \
 							color['weakBinder'][1] + refProtStr[core[1]:]
+						count += 1
 			elif core[1] in range(i, i + 70):
 					# Update core idxes
 					core = [idx -i for idx in core]
