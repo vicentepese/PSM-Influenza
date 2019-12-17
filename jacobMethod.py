@@ -1,11 +1,7 @@
-import numpy as np
 import sys
-import os
 import json
-import csv
 import re
 import random
-import subprocess
 from markdown2 import Markdown
 from Bio import Entrez
 from Bio import SeqIO
@@ -40,7 +36,6 @@ def statisticalTest(options, PTM_map, vaccSample, refProt):
 					PTM_stats[pos][ptm]['pvalue'] =  pvalue
 					PTM_stats[pos][ptm]['oddsratio'] = oddsratio
 
-
 	return PTM_stats
 
 def mapPTM(data, refProt, options):
@@ -51,15 +46,16 @@ def mapPTM(data, refProt, options):
 	PTM_count = defaultdict(lambda: defaultdict(int))
 	vaccSample = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
 
+	# For each sequence
 	for seq in data:
 
-		# Initialize
+		# Initialize: sequence with and without PTM, initial position
 		AAseq = seq[1][2:-2]
 		AAnonPTM = re.sub('\[.+?\]', '', AAseq)
 		init_pos = int(seq[2])
 
 		# Count instances for each AA (position)
-		for i in range(int(seq[2]), int(seq[2]) + len(AAnonPTM)):
+		for i in range(init_pos, init_pos + len(AAnonPTM)):
 			vaccSample[i][AAnonPTM[i-init_pos]][seq[3]] += 1
 
 		# If there is a PTM
@@ -98,19 +94,24 @@ def map2HTML(options, coreIdxs, coreClass, refProt, PTM_stats, seqPTM, vaccSampl
 	color = getRandomColor(options, PTM_count)
 	refProt = ''.join([refProt[pos] for pos in refProt])
 	
+	# In blocks of 70, while smaller than the length of the protein of reference
 	i = 0
 	while i < len(refProt):
 
 		# Create string of reference protein (taking 70 AA)
 		refProtStr = refProt[i:i+70]
 		count = 0 
+
+		# For each binding core and class
 		for core, coreCl in zip(coreIdxs, coreClass):
 
-			# If core is in that fragment of protein hightlight
+			# If initial position of the core overlaps with that fragment
 			if core[0] in range(i, i + 70):
-				# If no previous hightlight
+
+				# If no previous core
 				if count == 0:
-					# Update core idxes
+
+					# Update core idxes, and highlight based on class
 					core = [idx -i for idx in core]
 					if coreCl == 'strong':
 						refProtStr = refProtStr[0:core[0]] + color['strongBinder'][0] + refProtStr[core[0]:core[1]] + \
@@ -120,7 +121,8 @@ def map2HTML(options, coreIdxs, coreClass, refProt, PTM_stats, seqPTM, vaccSampl
 						refProtStr = refProtStr[0:core[0]] + color['weakBinder'][0] + refProtStr[core[0]:core[1]] + \
 							color['weakBinder'][1] + refProtStr[core[1]:]
 						count += 1
-				# If previous binding core in segment, update idx
+
+				# If previous binding core in segment, update idx and highlight based on class
 				else:
 					if coreCl == 'strong':
 						core = [idx - i + count*(len(color['strongBinder'][0]) + len(color['strongBinder'][1])) for idx in core]
@@ -132,8 +134,9 @@ def map2HTML(options, coreIdxs, coreClass, refProt, PTM_stats, seqPTM, vaccSampl
 						refProtStr = refProtStr[0:core[0]] + color['weakBinder'][0] + refProtStr[core[0]:core[1]] + \
 							color['weakBinder'][1] + refProtStr[core[1]:]
 						count += 1
+			
+			# If ending position of the core overlaps with the fragment: same
 			elif core[1] in range(i, i + 70):
-					# Update core idxes
 					core = [idx -i for idx in core]
 					core = [0 if idx < 0 else idx for idx in core]
 					if coreCl == 'strong':
@@ -145,11 +148,11 @@ def map2HTML(options, coreIdxs, coreClass, refProt, PTM_stats, seqPTM, vaccSampl
 							color['weakBinder'][1] + refProtStr[core[1]:]
 						count += 1
 		
-		# Append
+		# Append to HTML output
 		refProtStr = str(i+1) + '.' + '&nbsp;'*(6 -len(str(i))-1) + refProtStr + '\n'
 		PTM_HTML.append(markdowner.convert(refProtStr))
 
-		# Create ARP string
+		# Create ARP string, highlighting positions of PTMs, and append
 		ARP_str = color['ARP'][0] + 'ARP:&nbsp;&nbsp;' + color['ARP'][1]
 		ARP_ptm = defaultdict(lambda: defaultdict(int))
 		last_pos = 0
@@ -161,7 +164,7 @@ def map2HTML(options, coreIdxs, coreClass, refProt, PTM_stats, seqPTM, vaccSampl
 		ARP_str  = ARP_str +  color['ARP'][0] + '&mdash;'*(70 - last_pos) +  color['ARP'][1]
 		PTM_HTML.append(markdowner.convert(ARP_str))
 
-		# Create PAN string
+		# Create PAN string: same as ARP string
 		PAN_str = color['PAN'][0] + 'PAN:&nbsp;&nbsp;' + color['PAN'][1]
 		last_pos = 0
 		for pos in range(i,i+70):
@@ -169,7 +172,6 @@ def map2HTML(options, coreIdxs, coreClass, refProt, PTM_stats, seqPTM, vaccSampl
 				PAN_str  = PAN_str +  color['PAN'][0] + '&mdash;'*(pos - last_pos -1 - i) +  color['PAN'][1] + refProt[pos-1]
 				last_pos = pos - i
 		PAN_str  = PAN_str +  color['PAN'][0] + '&mdash;'*(70 - last_pos) +  color['PAN'][1]
-		
 		PTM_HTML.append(markdowner.convert(PAN_str))
 
 		# Create strings for each PTM positon and type 
@@ -206,6 +208,9 @@ def main():
 	# Read options
 	with open('options.json','r') as inFile:
 		options = json.load(inFile)
+
+	# Jacob method is designed to print the entire sequence of the protein reference 
+	options['pos_range'] = [1, 566]
 
 	# Import data 
 	data = importData(options)
