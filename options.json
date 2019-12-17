@@ -22,12 +22,13 @@
         "tmpOut.out":"netMHCIIpan-3.2/tmp/tmpOut.out",
         "DQ0602Binders":"Data/DQ0602Binders.csv",
         "DQ0602BindingCores":"Data/DQ0602BindingCores.csv",
-        "mapJacob.html":"Outputs/mapJacob.html"
+        "mapJacob.html":"Outputs/mapJacob.html",
+        "mutMapJacob.html":"Outputs/mutMapJacob.html"
     },
 
     "filterData":"HA-",
     "filterDataBash":"./filterData.sh",
-    "pos_range": [1,566],
+    "pos_range": [281,350],
     "refProt":"ADE29085.1",
     
     "MarkdownHigh":{

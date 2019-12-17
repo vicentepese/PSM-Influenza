@@ -148,7 +148,7 @@ def mapSeqPTM(data, refprot, options):
 	seqPTM = defaultdict(lambda: defaultdict(lambda : defaultdict(lambda : defaultdict(int))))
 	seqCount = defaultdict(lambda: defaultdict(int))
 	seqInit = defaultdict(int)
-	PTM_count = defaultdict(int)
+	PTM_count = defaultdict(lambda: defaultdict(int))
 
 	# For each sequence get sequence of AA (without PTM), initial and ending position
 	for seq in data:
@@ -171,9 +171,9 @@ def mapSeqPTM(data, refprot, options):
 				for instance, idx in zip(PTM_instances, PTM_idx):
 					if idx.start() > 0:
 						seqPTM[AAseq][idx.start() - 1 - idx_cumm][instance][seq[3]] += 1
-						PTM_count[instance] += 1
+						PTM_count[instance][seq[3]] += 1
 					idx_cumm += len(instance) + 2
-
+			
 	return seqPTM, seqCount, seqInit, PTM_count
 
 def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
