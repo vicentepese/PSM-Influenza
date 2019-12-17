@@ -7,9 +7,6 @@ from Bio import Entrez
 from Bio import SeqIO
 from collections import defaultdict, OrderedDict
 from scipy import stats
-
-# Import utils
-sys.path.insert(1,'./utils')
 from utils import getBindingCore, importBindData,\
 	 importData, reference_retreive, div0, getBindingCore, getRandomColor
 
@@ -91,7 +88,7 @@ def map2HTML(options, coreIdxs, coreClass, refProt, PTM_stats, seqPTM, vaccSampl
 	# Initialize
 	PTM_HTML = list()
 	markdowner = Markdown()
-	color = getRandomColor(options, PTM_count)
+	color = getRandomColor(options, PTM_count=PTM_count)
 	refProt = ''.join([refProt[pos] for pos in refProt])
 	
 	# In blocks of 70, while smaller than the length of the protein of reference
@@ -229,9 +226,6 @@ def main():
 
 	# Create HTML output
 	map2HTML(options, coreIdxs, coreClass, refProt, PTM_stats, seqPTM, vaccSample, PTM_count)
-
-	# Verbose
-	print('stop')
 
 if __name__ == "__main__":
 	main()

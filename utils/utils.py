@@ -103,16 +103,19 @@ def getBindingCore(options, refProt):
 	coreClass = [coreClass[idx] for idx in sortIdx]
 	return coreIdxs, coreClass
 
-def getRandomColor(options, PTM_count):
+def getRandomColor(options, **kwargs):
 
 	# Create color dictionnary
-	r = lambda: random.randint(75, 200)
-	color = {PTM: ['<span style=\"background: '+'#%02X%02X%02X; font-weight: bold' %
-		(r(), r(), r()) + '\">', "</span>"] for PTM in list(PTM_count.keys())}
+	if "PTM_count" in kwargs:
+		PTM_count = kwargs['PTM_count']
+		r = lambda: random.randint(75, 200)
+		color = {PTM: ['<span style=\"background: '+'#%02X%02X%02X; font-weight: bold' %
+			(r(), r(), r()) + '\">', "</span>"] for PTM in list(PTM_count.keys())}
 	color['ARP'] = ['<span style=\"color: #800000; font-weight: bold; \">', '</span>']
 	color['PAN'] = ['<span style=\"color: #000782; font-weight: bold; \">', '</span>']
 	color['strongBinder'] = ['<span style=\"background: #0F9D58; font-weight: bold; \">', '</span>']
 	color['weakBinder'] = ['<span style=\"background: #F4B400; font-weight: bold; \">', '</span>']
 	color['red'] = ['<span style=\"color: red; font-weight: bold; \">', '</span>']
-
+	color['mut'] = ['<span style=\"font-weight: bold\">', '</span>']
+	
 	return color
