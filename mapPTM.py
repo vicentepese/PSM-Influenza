@@ -9,33 +9,7 @@ from collections import defaultdict, OrderedDict
 import re 
 from markdown2 import Markdown
 from scipy import stats 
-
-def importData(options):
-
-	# Import data  as list of lists
-	data = list() 
-	with open(options['files']['mergedFiltMASS'], 'r') as inFile:
-		reader = csv.reader(inFile)
-		for row in reader:
-			data.append(row)
-	
-	return data
-
-def reference_retreive(proteinID):
-
-	# Retrieve protein and get dictionnary of each peptide position
-	Entrez.email = "ambati@stanford.edu"
-	handle = Entrez.efetch(db="protein", rettype="fasta", retmode="text", id=proteinID)
-	seq_record = SeqIO.read(handle, "fasta")
-
-	# For each reference
-	out_ref={}
-	for i, j in enumerate(str(seq_record.seq)):
-		out_ref[i+1] =j
-	return out_ref
-
-def div0(n, d):
-	return n / d if d and n else 0
+from utils import importData, reference_retreive, div0
 
 def map_PTMs(options, data, refProt):
 
