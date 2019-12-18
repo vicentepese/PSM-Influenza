@@ -38,7 +38,7 @@ def statisticalTest(options, PTM_seq, seqCount, seq):
 	return PTM_stats, sig_pval
 
 def checkOverlap(seq_init_pos, seq_end_pos, coreIdxs):
-	
+
 	# If there is a partial overlap of at least one AA
 	for core in coreIdxs:
 		if any([idx in range(seq_init_pos, seq_end_pos) for idx in core]):
@@ -57,27 +57,30 @@ def mapSeqPTM(data, refprot, options):
 	# For each sequence get sequence of AA (without PTM), initial and ending position
 	for seq in data:
 
+		# Initialize: sequence without PTM, initial and ending position
 		AAseq = re.sub('\[.+?\]','',seq[1])[2:-2]
 		init_pos = int(seq[2])
 		end_pos = init_pos + len(AAseq)
 
-		# If sequence overlaps with range
+		if 'AMERNAGSGIIF' == AAseq:
+			print('stop')
+
+		# If sequence overlaps with range, count and store initial position
 		if not(end_pos < options['pos_range'][0]) and not(init_pos > options['pos_range'][1]):
 			seqCount[AAseq][seq[3]] += 1
 			seqInit[AAseq] = int(seq[2])
 
-			# If sequence has PTM, save instances and indexes, else save sequence
+			# If sequence has PTM, save instances and indexes
 			if '[' in seq[1][2:-2]:
 				PTM_instances = re.findall('\[(.*?)\]', seq[1][2:-2], re.DOTALL)
 				PTM_idx = re.finditer('\[(.*?)\]', seq[1][2:-2], re.DOTALL)
 				idx_cumm = 0
-
 				for instance, idx in zip(PTM_instances, PTM_idx):
 					if idx.start() > 0:
 						seqPTM[AAseq][idx.start() - 1 - idx_cumm][instance][seq[3]] += 1
 						PTM_count[instance][seq[3]] += 1
 					idx_cumm += len(instance) + 2
-			
+
 	return seqPTM, seqCount, seqInit, PTM_count
 
 def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
@@ -102,9 +105,6 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
 		seq_init_pos = seqInit[seq]
 		seq_end_pos = seq_init_pos + len(seq)
 
-		if seq_init_pos == 40:
-			print('stop')
-
 		# Compute Fisher extact test for each PTM between vaccines
 		PTM_stats, sig_pval = statisticalTest(options, seqPTM[seq], seqCount, seq)
 
@@ -126,16 +126,15 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
 		# Create markdown string (highlight PTMs in the sequence)
 		for i in range(0,len(PTM_pos_loop)):
 			if seqPos[i] in sig_pval:
-				seqMark = seqMark[0:PTM_pos_loop[i]] + color['red'][0] + seqMark[PTM_pos_loop[i]] + \
-					color['red'][1] + seqMark[(PTM_pos_loop[i]+1):]
-				PTM_pos_loop = [pos + len(color['red'][0]) + len(color['red'][1]) for pos in PTM_pos_loop]
+				seqMark = seqMark[0:PTM_pos_loop[i]] + color['sigPTM'][0] + seqMark[PTM_pos_loop[i]] + \
+					color['sigPTM'][1] + seqMark[(PTM_pos_loop[i]+1):]
+				PTM_pos_loop = [pos + len(color['sigPTM'][0]) + len(color['sigPTM'][1]) for pos in PTM_pos_loop]
 			else:
-				seqMark = seqMark[0:PTM_pos_loop[i]] + color['orange'][0] + seqMark[PTM_pos_loop[i]] + \
-					color['orange'][1] + seqMark[(PTM_pos_loop[i]+1):]
-				PTM_pos_loop = [pos + len(color['orange'][0]) + len(color['orange'][1]) for pos in PTM_pos_loop]
+				seqMark = seqMark[0:PTM_pos_loop[i]] + color['nonsigPTM'][0] + seqMark[PTM_pos_loop[i]] + \
+					color['nonsigPTM'][1] + seqMark[(PTM_pos_loop[i]+1):]
+				PTM_pos_loop = [pos + len(color['nonsigPTM'][0]) + len(color['nonsigPTM'][1]) for pos in PTM_pos_loop]
 
-		# TODO: optimize this if-else statement
-		# Append initial location and ARP and PAN proportion 
+		# Append initial location 
 		if options['pos_range'][0] > 1:
 			seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos)) + seqMark + \
 				'(ARP: {0}, PAN: {1}'.format(seqCount[seq]['ARP'], seqCount[seq]['PAN']) + ')'
@@ -143,6 +142,7 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
 			seqMark = '&nbsp;'*(np.absolute(init_pos-seq_init_pos) - len(str(seq_init_pos)) - 1) + str(seq_init_pos) + '.' + seqMark + \
 				'(ARP: {0}, PAN: {1}'.format(seqCount[seq]['ARP'], seqCount[seq]['PAN']) + ')'
 
+		# Append ARP and PAN proportions and p-values
 		for pos in seqPos:
 			seqMark = seqMark +  ' // ' + '__' + str(pos) + '__: '
 			for ptm in list(seqPTM[seq][pos].keys()):
@@ -155,8 +155,9 @@ def seq2HTML(options, seqPTM, seqCount, seqInit, PTM_count, refProt, coreIdxs):
 						' \(ARP:{:.2%}' ' PAN:{:.2%}\) '.format(div0(seqPTM[seq][pos][ptm]['ARP'],seqCount[seq]['ARP']),\
 							div0(seqPTM[seq][pos][ptm]['PAN'],seqCount[seq]['PAN']))
 
+		# Append and update
 		seqHTML[seq] = Markdowner.convert(seqMark + '\n')
-	
+		
 	# Sort initial position
 	seqInit = OrderedDict([(k, seqInit[k]) for k in sorted(seqInit, key=seqInit.get)])
 

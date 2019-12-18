@@ -115,7 +115,9 @@ def getRandomColor(options, **kwargs):
 	color['PAN'] = ['<span style=\"color: #000782; font-weight: bold; \">', '</span>']
 	color['strongBinder'] = ['<span style=\"background: #0F9D58; font-weight: bold; \">', '</span>']
 	color['weakBinder'] = ['<span style=\"background: #F4B400; font-weight: bold; \">', '</span>']
-	color['red'] = ['<span style=\"color: red; font-weight: bold; \">', '</span>']
+	color['red'] = ['<span style=\"color: #ff1100; font-weight: bold; \">', '</span>']
+	color['sigPTM'] = ['<span style=\"background: #ff1100; font-weight: bold; \">', '</span>']
+	color['nonsigPTM'] = ['<span style=\"background: #ff8400; font-weight: bold; \">', '</span>']
 	color['mut'] = ['<span style=\"font-weight: bold\">', '</span>']
 	
 	return color
