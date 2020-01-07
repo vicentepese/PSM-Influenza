@@ -17,25 +17,36 @@ from utils import getBindingCore, importBindData,\
 def statisticalTest(options, seqMut, vaccSample, refProt):
 
 	# Initialize 
-	MUT_stats = defaultdict(lambda: defaultdict(lambda : defaultdict(int)))
+	MUT_stats = defaultdict(lambda: defaultdict(lambda : defaultdict(lambda: defaultdict(int))))
 
 	# For each position
 	for pos in range(options['pos_range'][0], options['pos_range'][1]+1):
 
-		# If there is a mutation for both vaccines
-		if len(list(seqMut[pos].keys())) >=1:
-			for mut in list(seqMut[pos].keys()):
-				if seqMut[pos][mut]['PAN'] and seqMut[pos][mut]['ARP']:
+		if pos in list(seqMut.keys()):
+			for ptm in list(seqMut[pos].keys()):
+				if 'PAN' and 'ARP' in list(seqMut[pos][ptm].keys()):
 
 					# Create array 
-					ptm_positive = [seqMut[pos][mut]['ARP'], seqMut[pos][mut]['PAN']]
-					ptm_negative = [vaccSample[pos]['ARP'] - seqMut[pos][mut]['ARP'], \
-						 vaccSample[pos]['PAN'] - seqMut[pos][mut]['PAN']]
+					ptm_positive = [seqMut[pos][ptm]['ARP'], seqMut[pos][ptm]['PAN']]
+					ptm_negative = [vaccSample[pos]['ARP'] - seqMut[pos][ptm]['ARP'], \
+						 vaccSample[pos]['PAN'] - seqMut[pos][ptm]['PAN']]
 					
 					# Fisher test and append to output
 					oddsratio, pvalue = stats.fisher_exact([ptm_positive, ptm_negative])
-					MUT_stats[pos][mut]['pvalue'] =  pvalue
-					MUT_stats[pos][mut]['oddsratio'] = oddsratio
+					MUT_stats[pos][ptm]['ARP']['pvalue'] =  pvalue
+					MUT_stats[pos][ptm]['ARP']['oddsratio'] = oddsratio
+
+				if 'PAN' and 'FOC' in list(seqMut[pos][ptm].keys()):
+
+					# Create array 
+					ptm_positive = [seqMut[pos][ptm]['FOC'], seqMut[pos][ptm]['PAN']]
+					ptm_negative = [vaccSample[pos]['FOC'] - seqMut[pos][ptm]['FOC'], \
+						 vaccSample[pos]['PAN'] - seqMut[pos][ptm]['PAN']]
+					
+					# Fisher test and append to output
+					oddsratio, pvalue = stats.fisher_exact([ptm_positive, ptm_negative])
+					MUT_stats[pos][ptm]['FOC']['pvalue'] =  pvalue
+					MUT_stats[pos][ptm]['FOC']['oddsratio'] = oddsratio
 
 	return MUT_stats
 
@@ -67,9 +78,10 @@ def mapMutations(data, refProt, options):
 	# Filter positions where there is no samples from any of the
 	# vaccines
 	for pos in list(seqMUT.keys()):
-		for mut in list(seqMUT[pos].keys()):
-			if not(seqMUT[pos][mut]['ARP']) or not(seqMUT[pos][mut]['PAN']):
-				del seqMUT[pos][mut]
+		for ptm in list(seqMUT[pos].keys()):
+			if not(seqMUT[pos][ptm]['ARP'] and seqMUT[pos][ptm]['PAN']) \
+				and not(seqMUT[pos][ptm]['FOC'] and seqMUT[pos][ptm]['PAN']):
+				del seqMUT[pos][ptm]
 		if len(seqMUT[pos]) < 1:
 			del seqMUT[pos]
 
@@ -142,44 +154,62 @@ def map2HTML(options, coreIdxs, coreClass, refProt, MUT_stats, seqMut, vaccSampl
 		refProtStr = str(i+1) + '.' + '&nbsp;'*(6 -len(str(i))-1) + refProtStr + '\n'
 		PTM_HTML.append(markdowner.convert(refProtStr))
 
-		# Create ARP string, highlighting positions of PTMs, and append
-		ARP_str = color['ARP'][0] + 'ARP:&nbsp;&nbsp;' + color['ARP'][1]
-		ARP_mut = defaultdict(lambda: defaultdict(int))
-		last_pos = 0
-		for pos in range(i,i+70):
-			if any(seqMut[pos][mut]['ARP'] for mut in list(seqMut[pos].keys())):
-				ARP_str  = ARP_str +  color['ARP'][0] + '&mdash;'*(pos - last_pos -1 - i) +  color['ARP'][1] + refProt[pos-1]
-				ARP_mut[pos] = {mut: seqMut[pos][mut] for mut in seqMut[pos] if seqMut[pos][mut]['ARP']}
-				last_pos = pos - i
-		ARP_str  = ARP_str +  color['ARP'][0] + '&mdash;'*(70 - last_pos) +  color['ARP'][1]
-		PTM_HTML.append(markdowner.convert(ARP_str))
-
 		# Create PAN string: same as ARP string
 		PAN_str = color['PAN'][0] + 'PAN:&nbsp;&nbsp;' + color['PAN'][1]
 		last_pos = 0
 		for pos in range(i,i+70):
-			if any(seqMut[pos][mut]['PAN'] for mut in seqMut[pos]):
-				PAN_str  = PAN_str +  color['PAN'][0] + '&mdash;'*(pos - last_pos -1 - i) +  color['PAN'][1] + refProt[pos-1]
-				last_pos = pos - i
+			if pos in list(seqMut.keys()):
+				if any(seqMut[pos][mut]['PAN'] for mut in seqMut[pos]):
+					PAN_str  = PAN_str +  color['PAN'][0] + '&mdash;'*(pos - last_pos -1 - i) +  color['PAN'][1] + refProt[pos-1]
+					last_pos = pos - i
 		PAN_str  = PAN_str +  color['PAN'][0] + '&mdash;'*(70 - last_pos) +  color['PAN'][1]
-		
 		PTM_HTML.append(markdowner.convert(PAN_str))
 
+		# Create ARP string, highlighting positions of PTMs, and append
+		ARP_str = color['ARP'][0] + 'ARP:&nbsp;&nbsp;' + color['ARP'][1]
+		mut_dict = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+		last_pos = 0
+		for pos in range(i,i+70):
+			if pos in list(seqMut.keys()):
+				if any(seqMut[pos][mut]['ARP'] for mut in seqMut[pos]):
+					ARP_str  = ARP_str +  color['ARP'][0] + '&mdash;'*(pos - last_pos -1 - i) +  color['ARP'][1] + refProt[pos-1]
+					for mut in seqMut[pos]:
+						mut_dict[pos][mut]['ARP'] = seqMut[pos][mut]['ARP']
+						last_pos = pos - i
+		ARP_str  = ARP_str +  color['ARP'][0] + '&mdash;'*(70 - last_pos) +  color['ARP'][1]
+		PTM_HTML.append(markdowner.convert(ARP_str))
+
+		# Create FOC string, highlighting positions of PTMs, and append
+		FOC_str = color['FOC'][0] + 'FOC:&nbsp;&nbsp;' + color['FOC'][1]
+		last_pos = 0
+		for pos in range(i,i+70):
+			if pos in list(seqMut.keys()):
+				if any(seqMut[pos][mut]['FOC'] for mut in seqMut[pos]):
+					FOC_str  = FOC_str +  color['FOC'][0] + '&mdash;'*(pos - last_pos -1 - i) +  color['FOC'][1] + refProt[pos-1]
+					for mut in seqMut[pos]:
+						mut_dict[pos][mut]['FOC'] = seqMut[pos][mut]['FOC']
+						last_pos = pos - i
+		FOC_str  = FOC_str +  color['FOC'][0] + '&mdash;'*(70 - last_pos) +  color['FOC'][1]
+		PTM_HTML.append(markdowner.convert(FOC_str))
+
 		# Create strings for each PTM positon and type 
-		for pos in list(ARP_mut.keys()):
-			for mut in list(ARP_mut[pos].keys()):
-				ARP_prop = seqMut[pos][mut]['ARP']/vaccSample[pos]['ARP']
-				ARP_samp = vaccSample[pos]['ARP']
-				PAN_prop = seqMut[pos][mut]['ARP']/vaccSample[pos]['PAN']
-				PAN_samp = vaccSample[pos]['PAN']
-				ARP_ptm_str = '&nbsp;'*(pos -i -3+ 6) + \
-						color['mut'][0] + mut +  color['mut'][1] + \
-							'(ARP:{:.2%}({}), PAN:{:.2%}({}), '.format(ARP_prop, ARP_samp, PAN_prop, PAN_samp )
-				if MUT_stats[pos][mut]['pvalue'] < 0.05:
-					ARP_ptm_str = ARP_ptm_str + color['red'][0] + 'p={:.2}'.format(MUT_stats[pos][mut]['pvalue']) + '\n'
-				else:
-					ARP_ptm_str = ARP_ptm_str + 'p={:.2})'.format(MUT_stats[pos][mut]['pvalue']) + '\n'
-				PTM_HTML.append(markdowner.convert(ARP_ptm_str))
+		for pos in list(mut_dict.keys()):
+			for mut in list(mut_dict[pos].keys()):
+				for vacc in list(mut_dict[pos][mut].keys()):
+					if mut_dict[pos][mut][vacc] > 0:
+						vacc_prop = seqMut[pos][mut][vacc]/vaccSample[pos][vacc]
+						vacc_samp = vaccSample[pos][vacc]
+						PAN_prop = seqMut[pos][mut]['PAN']/vaccSample[pos]['PAN'] 
+						PAN_samp = vaccSample[pos]['PAN']
+						PAN_mut_str = '&nbsp;'*(pos -i -3+ 6) + \
+								color['mut'][0] + mut +  color['mut'][1] + \
+									'(' + vacc + ':{:.2%}({}),PAN:{:.2%}({}),'.format(vacc_prop, vacc_samp, PAN_prop, PAN_samp)
+						if pos in list(MUT_stats.keys()) and vacc in list(MUT_stats[pos][mut].keys()) \
+							and MUT_stats[pos][mut][vacc]['pvalue'] < 0.05:
+							PAN_mut_str = PAN_mut_str + color['red'][0] + 'p={:.2}'.format(MUT_stats[pos][mut][vacc]['pvalue']) + '\n'
+						elif pos in list(MUT_stats.keys()) and vacc in list(MUT_stats[pos][mut].keys()):
+							PAN_mut_str = PAN_mut_str + 'p={:.2})'.format(MUT_stats[pos][mut][vacc]['pvalue']) + '\n'
+						PTM_HTML.append(markdowner.convert(PAN_mut_str))
 
 		# Separate 
 		PTM_HTML.append(markdowner.convert('&nbsp;\n'))

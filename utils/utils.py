@@ -111,8 +111,10 @@ def getRandomColor(options, **kwargs):
 		r = lambda: random.randint(75, 200)
 		color = {PTM: ['<span style=\"background: '+'#%02X%02X%02X; font-weight: bold' %
 			(r(), r(), r()) + '\">', "</span>"] for PTM in list(PTM_count.keys())}
+	else: color = {}
 	color['ARP'] = ['<span style=\"color: #800000; font-weight: bold; \">', '</span>']
 	color['PAN'] = ['<span style=\"color: #000782; font-weight: bold; \">', '</span>']
+	color['FOC'] = ['<span style=\"color: #710082; font-weight: bold; \">', '</span>']
 	color['strongBinder'] = ['<span style=\"background: #0F9D58; font-weight: bold; \">', '</span>']
 	color['weakBinder'] = ['<span style=\"background: #F4B400; font-weight: bold; \">', '</span>']
 	color['red'] = ['<span style=\"color: #ff1100; font-weight: bold; \">', '</span>']
