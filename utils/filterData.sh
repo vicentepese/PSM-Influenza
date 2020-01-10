@@ -14,6 +14,6 @@ for i in $var ; do
     elif [[ $i == *"PAN"* ]]; then 
         awk -v FS=';' '$19 ~ "HA-" {print $19 "," $3 "," $12 "," "PAN"}' $i > ../FiltDataMASS/$i
     else
-         awk -v FS=',' '$19 ~ " hemagglutinin " {print $19 "," $3 "," $12 "," "FOC"}' $i > ../FiltDataMASS/$i
+         awk -v FS=';' '$19 ~ "hemagglutinin" {print "HA" "," $3 "," $12 "," "FOC"}' $i > ../FiltDataMASS/$i
     fi
 done

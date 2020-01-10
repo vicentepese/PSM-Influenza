@@ -191,11 +191,12 @@ def map2HTML(options, coreIdxs, coreClass, refProt, PTM_stats, seqPTM, vaccSampl
 		last_pos = 0
 		for pos in range(i,i+70):
 			if pos in list(seqPTM.keys()):
-				if any(seqPTM[pos][ptm]['FOC'] for ptm in seqPTM[pos]):
+				if any('FOC' in list(seqPTM[pos][ptm].keys()) for ptm in seqPTM[pos]):
 					FOC_str  = FOC_str +  color['FOC'][0] + '&mdash;'*(pos - last_pos -1 - i) +  color['FOC'][1] + refProt[pos-1]
 					for ptm in seqPTM[pos]:
-						ptm_dict[pos][ptm]['FOC'] = seqPTM[pos][ptm]['FOC'] 
-						last_pos = pos - i
+						if 'FOC' in list(seqPTM[pos][ptm]):
+							ptm_dict[pos][ptm]['FOC'] = seqPTM[pos][ptm]['FOC'] 
+							last_pos = pos - i
 		FOC_str  = FOC_str +  color['FOC'][0] + '&mdash;'*(70 - last_pos) +  color['FOC'][1]
 		PTM_HTML.append(markdowner.convert(FOC_str))
 
