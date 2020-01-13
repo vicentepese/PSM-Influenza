@@ -200,6 +200,9 @@ def map2HTML(options, coreIdxs, coreClass, refProt, PTM_stats, seqPTM, vaccSampl
 		FOC_str  = FOC_str +  color['FOC'][0] + '&mdash;'*(70 - last_pos) +  color['FOC'][1]
 		PTM_HTML.append(markdowner.convert(FOC_str))
 
+		# Sort PTMs by position
+		ptm_dict = {item[0]: item[1] for item in sorted(ptm_dict.items(), reverse=False)}
+
 		# Create strings for each PTM positon and type 
 		for pos in list(ptm_dict.keys()):
 			for ptm in list(ptm_dict[pos].keys()):
