@@ -27,7 +27,7 @@ def getGlyco(options, data):
         # If segement within defined range
         if not(initPos > pos_range[1]) and not(endPos < pos_range[0]): 
 
-            # Count
+            # If sequence is glycosylated, count
             if '+203.079' in AAseq:
                 glycoCount[seq[3]] += 1
 
