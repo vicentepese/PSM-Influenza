@@ -36,4 +36,3 @@ The scripts' outcomes presented in this section are inspired by the format used 
 - `jacobMethod.py` maps the post-translational modifications presented in _ARP_ and _FOC_ and tests their significance against _PAN_. A significance level of 0.05 was set and is reflected in _p-values_ in red. 
 - `mutJaconMethod.py` maps the mutations presented in _ARP_, _FOC_ and _PAN_ in comparison to the protein of reference. A significance level of 0.05 was set. 
 - `testGlycosylation.py` test the significant occurrence of at least one glycosylation between the positions 277 and 323. 
-### mapSequences.py
