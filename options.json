@@ -42,6 +42,8 @@
 
     "netMHCIIpan-3.2":{
         "allele":"HLA-DQA10102-DQB10602"
-    }
+    },
+
+    "glycoRange": [286, 294]
     
 }
