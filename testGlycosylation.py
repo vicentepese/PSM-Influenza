@@ -31,9 +31,11 @@ def getGlycoAmid(options, data):
         initPos = int(seq[2])
         endPos = initPos + len(AAnonPTM) -1
         pos_range = options['pos_range']
+        NPos = 277 - initPos
+
 
         # If segement overlaps with defined range
-        if not(initPos > pos_range[1]) and not(endPos < pos_range[0]): 
+        if not(initPos >= pos_range[1]) and not(endPos <= pos_range[0]): 
             
             # Count sample 
             vaccSample[seq[3]] +=1
@@ -44,7 +46,7 @@ def getGlycoAmid(options, data):
             
             ########### SCENARIO B ###########
             # If sequence contains both 277N and glycosylation sites
-            if not(initPos >= glycoRange[0] ) and not(endPos <= glycoRange[1]) and 277 in range(initPos, endPos+1):
+            if not(initPos >= glycoRange[1] ) and not(endPos <= glycoRange[0]) or 277 in range(initPos, endPos+1):
                 
                 # Find indexes and instances of PTMs
                 PTM_idx = re.finditer('\[(.*?)\]', AAseq, re.DOTALL)
@@ -53,7 +55,6 @@ def getGlycoAmid(options, data):
                 # Initialize variables
                 idx_cumm = 0
                 flag = 0
-                NPos = 277 - initPos
 
                 # For each instance, if there is a glycosylation within the range, raise a flag
                 for instance, idx in zip(PTM_instances, PTM_idx):
@@ -75,7 +76,7 @@ def getGlycoAmid(options, data):
             ########### SCENARIO A ###########
 
             # If the sequence contains glycsylation site
-            if not(initPos >= glycoRange[0] ) and not(endPos <= glycoRange[1]):
+            if not(initPos >= glycoRange[1] ) and not(endPos <= glycoRange[0]):
 
                 # Find indexes and instances of PTMs
                 PTM_idx = re.finditer('\[(.*?)\]', AAseq, re.DOTALL)
@@ -84,7 +85,6 @@ def getGlycoAmid(options, data):
                 # Initialize variables
                 idx_cumm = 0
                 flag = 0
-                NPos = 277 - initPos
 
                 # For each instance, check glycosylation and raise flag
                 for instance, idx in zip(PTM_instances, PTM_idx):
@@ -104,6 +104,7 @@ def getGlycoAmid(options, data):
                 if not(AAseq[NPos+2:NPos+8] == '+0.984'):
                     nonDeamidCount[seq[3]] += 1
                 nonDeamidSample[seq[3]] += 1
+            
 
     return vaccSample, glycoCount, nonglycoCount, nonglycoSample, nonDeamidCount, nonDeamidSample, nonGlDa, nonGlDaSample
 
@@ -187,7 +188,7 @@ def main():
         print(vacc + ' {:.2%} ({})'.format(nonGlDa[vacc]/nonGlDaSample[vacc], nonGlDaSample[vacc]) + \
             ' vs. PAN {:.2%} ({}): pvalue = {:.2}, oddsratio = {:.2}'.format( \
             nonGlDa['PAN']/nonGlDaSample['PAN'], nonGlDaSample['PAN'], \
-            fisherResult[vacc]['pvalue'], fisherResult[vacc]['oddsratio']))
+            nonGlDaFisher[vacc]['pvalue'], nonGlDaFisher[vacc]['oddsratio']))
 
 
 
